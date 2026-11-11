@@ -103,6 +103,8 @@ relatorio/                  relatório da disciplina (HTML para gerar o PDF)
 
 ### 1. Coleta no Airflow 3
 
+**Atalho (Linux ou WSL):** `bash scripts/setup_airflow.sh` instala o Airflow 3.4.0 em `~/airflow-gs`, aponta para `dags/` deste repositório e cria as Variables; `bash scripts/start_airflow.sh` sobe a interface em `http://localhost:8080`. O Airflow não roda direto no Windows: use o WSL. Com o atalho, pule para o passo 3.
+
 1. Copie `dags/` para a pasta de DAGs do seu Airflow 3 (os dois arquivos juntos). O worker precisa do pacote `requests`.
 2. Em **Admin > Variables**, crie `gs_chegada_dir` com o caminho da pasta de pouso (uma pasta que você consiga abrir depois para fazer o upload). As outras Variables são opcionais:
 
