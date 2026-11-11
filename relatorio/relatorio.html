@@ -117,11 +117,12 @@
 
 <h3>Requisito 01 · Duas ou mais fontes, ao menos uma externa</h3>
 <p>Quatro fontes do problema: três externas e reais (Open-Meteo e dois conjuntos da ANEEL) e uma simulada (eventos das lojas). O clima explica a carga de refrigeração; a tarifa e a bandeira transformam kWh em reais; os eventos são o desperdício em si.</p>
-<figure><img src="prints/01-fontes-no-navegador.png" alt="01-fontes-no-navegador.png"><figcaption>Figura 1. Resposta das APIs do Open-Meteo e da ANEEL testadas no navegador.</figcaption></figure>
+<figure><img src="prints/01-fonte-open-meteo.png" alt="01-fonte-open-meteo.png"><figcaption>Figura 1a. Resposta da API do Open-Meteo (api.open-meteo.com/v1/forecast) para São Paulo em 10/11/2026, aberta no navegador.</figcaption></figure>
+<figure><img src="prints/01-fonte-aneel.png" alt="01-fonte-aneel.png"><figcaption>Figura 1b. Resposta da API de dados abertos da ANEEL (datastore_search, bandeiras tarifárias), aberta no navegador.</figcaption></figure>
 
 <h3>Requisito 02 · DAG agendado gravando em chegada/</h3>
 <p>O DAG <code>gs_energia_coleta</code> roda todo dia às 06h (<code>schedule="0 6 * * *"</code>, fuso de Brasília) e coleta o dia anterior. Cada coleta grava um arquivo com a data no nome, por exemplo <code>chegada/clima/clima_2026-11-08.json</code>.</p>
-<figure><img src="prints/02-pasta-chegada.png" alt="02-pasta-chegada.png"><figcaption>Figura 2. Pasta chegada/ com um arquivo por fonte e por dia.</figcaption></figure>
+<figure><img src="prints/02-pasta-chegada.png" alt="02-pasta-chegada.png"><figcaption>Figura 2. Listagem da pasta chegada/ depois das 10 execuções: um arquivo por fonte e por dia, com a data no nome.</figcaption></figure>
 
 <h3>Requisito 03 · Paralelismo, conferência e chaves fora do código</h3>
 <p>As tarefas <code>coletar_clima</code>, <code>coletar_bandeiras</code>, <code>coletar_tarifas</code> e <code>coletar_eventos</code> rodam em paralelo. A tarefa <code>conferir_chegada</code> verifica se os quatro arquivos do dia existem, não estão vazios e são JSON válido; se não, falha a execução. A configuração fica em Airflow Variables. Nenhuma das fontes exige chave de API; não há segredo no código nem no repositório.</p>
@@ -166,7 +167,7 @@
 <!-- ============================ 06 ============================ -->
 <h2>06 · Prints do Airflow</h2>
 <figure><img src="prints/06-airflow-graph.png" alt="06-airflow-graph.png"><figcaption>Figura 14. Visão Graph: inicio, quatro coletas em paralelo e conferir_chegada.</figcaption></figure>
-<figure><img src="prints/06-airflow-grid.png" alt="06-airflow-grid.png"><figcaption>Figura 15. Visão Grid com as execuções diárias concluídas.</figcaption></figure>
+<figure><img src="prints/06-airflow-grid.png" alt="06-airflow-grid.png"><figcaption>Figura 15. Visão Grid (à esquerda) e lista das 10 execuções diárias concluídas com sucesso.</figcaption></figure>
 
 <!-- ============================ 07 ============================ -->
 <h2>07 · Contagens da Bronze</h2>
