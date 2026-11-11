@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Relatório Big Data · Energia que dá Lucro</title>
+<style>
+  :root { --verde: #0b6b4f; --cinza: #5b6470; --borda: #d5dae0; --fundo: #f4f7f6; --alerta: #b45309; }
+  * { box-sizing: border-box; }
+  body { font-family: "Segoe UI", Arial, sans-serif; color: #1b2430; background: #fff; line-height: 1.5;
+         max-width: 900px; margin: 0 auto; padding: 24px 16px 48px; font-size: 14px; }
+  h1 { font-size: 26px; margin: 4px 0; }
+  h2 { font-size: 18px; border-bottom: 3px solid var(--verde); padding-bottom: 4px; margin-top: 36px; break-after: avoid; }
+  h3 { font-size: 15px; margin: 22px 0 6px; break-after: avoid; }
+  .sobre { color: var(--verde); font-weight: 700; letter-spacing: .12em; font-size: 12px; text-transform: uppercase; }
+  .sub { color: var(--cinza); margin-top: 0; }
+  table { border-collapse: collapse; width: 100%; margin: 8px 0 14px; }
+  th, td { border: 1px solid var(--borda); padding: 6px 8px; text-align: left; vertical-align: top; }
+  th { background: var(--fundo); }
+  code { background: var(--fundo); padding: 1px 4px; border-radius: 3px; font-size: 12.5px; }
+  pre { background: var(--fundo); border: 1px solid var(--borda); padding: 10px; overflow-x: auto; font-size: 12px; border-radius: 4px; }
+  figure { margin: 10px 0 18px; break-inside: avoid; }
+  figure img { max-width: 100%; border: 1px solid var(--borda); display: block; }
+  figcaption { font-size: 12.5px; color: var(--cinza); margin-top: 4px; }
+  .falta { border: 2px dashed var(--alerta); color: var(--alerta); padding: 18px; text-align: center; font-weight: 600; }
+  .preencher { background: #fff3cd; padding: 0 4px; border-radius: 3px; }
+  .nota { border-left: 4px solid var(--verde); background: var(--fundo); padding: 8px 12px; margin: 10px 0; }
+  .fluxo { display: flex; flex-wrap: wrap; align-items: stretch; gap: 6px; margin: 12px 0; }
+  .fluxo div { border: 1px solid var(--verde); border-radius: 6px; padding: 8px 10px; flex: 1 1 100px; text-align: center; font-size: 12.5px; background: var(--fundo); }
+  .fluxo div b { display: block; font-size: 13.5px; }
+  .fluxo span { align-self: center; color: var(--verde); font-weight: 700; }
+  .instrucoes { border: 2px solid var(--alerta); padding: 10px 14px; border-radius: 6px; margin-bottom: 20px; }
+  @media print { .instrucoes { display: none; } body { padding: 0; max-width: none; } a { color: inherit; } }
+</style>
+</head>
+<body>
+
+<div class="instrucoes">
+  <b>Como transformar este arquivo no PDF da entrega</b> (este quadro não sai na impressão)
+  <ol>
+    <li>Salve cada print em <code>relatorio/prints/</code> com o nome indicado no quadro tracejado. Ele aparece no lugar ao recarregar a página.</li>
+    <li>Troque todos os trechos <span class="preencher">em amarelo</span> pelos valores reais (edite o HTML em qualquer editor de texto).</li>
+    <li>Abra no navegador, Ctrl+P, destino "Salvar como PDF", com "Gráficos de plano de fundo" ligado.</li>
+    <li>Confira no PDF se todo print está legível e com legenda, e se a ordem das seções 01 a 09 foi mantida.</li>
+  </ol>
+</div>
+
+<div class="sobre">FIAP · Global Solution 2026.2 · CitizenTech · 4ES</div>
+<h1>Energia que dá Lucro · componente Dados</h1>
+<p class="sub">Relatório de Big Data Architecture &amp; Data Integration</p>
+
+<!-- ============================ 01 ============================ -->
+<h2>01 · Integrantes</h2>
+<table>
+  <tr><th>Nome completo</th><th>RM</th></tr>
+  <tr><td><span class="preencher">Nome completo 1</span></td><td><span class="preencher">RM</span></td></tr>
+  <tr><td><span class="preencher">Nome completo 2</span></td><td><span class="preencher">RM</span></td></tr>
+  <tr><td><span class="preencher">Nome completo 3</span></td><td><span class="preencher">RM</span></td></tr>
+  <tr><td><span class="preencher">Nome completo 4</span></td><td><span class="preencher">RM</span></td></tr>
+  <tr><td><span class="preencher">Nome completo 5</span></td><td><span class="preencher">RM</span></td></tr>
+</table>
+
+<!-- ============================ 02 ============================ -->
+<h2>02 · O produto em uma frase e as perguntas que o MVP responde</h2>
+<p><b>Energia que dá Lucro</b> mostra ao pequeno comerciante de bairro, em reais, a energia que a loja desperdiça (geladeira aberta, luz acesa sem necessidade), avisa na hora em que isso acontece e sugere o que fazer.</p>
+<p>Com os dados deste pipeline, o painel responde ao comerciante:</p>
+<ol>
+  <li>Quanto a minha loja desperdiçou de energia neste mês, em reais e em kWh?</li>
+  <li>Quais equipamentos mais desperdiçam?</li>
+  <li>Em que horários o desperdício se concentra?</li>
+  <li>Dias e horas mais quentes aumentam o desperdício na refrigeração?</li>
+  <li>Quanto deixei de desperdiçar depois que os alertas começaram? (impacto)</li>
+</ol>
+<h3>Ficha Técnica do MVP</h3>
+<table>
+  <tr><th>Campo</th><th>Conteúdo</th></tr>
+  <tr><td>Nome do produto</td><td>Energia que dá Lucro <span class="preencher">(confirmar nome definitivo)</span></td></tr>
+  <tr><td>Cidadão e território</td><td>Donos e funcionários de pequenos comércios de bairro (mercadinhos, padarias, açougues, lojas) em cidades brasileiras.</td></tr>
+  <tr><td>Problema, em uma frase</td><td>O pequeno comerciante paga caro de energia sem saber quais hábitos e equipamentos causam o desperdício.</td></tr>
+  <tr><td>Proposta de valor</td><td>Mostrar o desperdício em reais, avisar na hora em que ele acontece e sugerir ações simples, usando as câmeras que a loja já tem.</td></tr>
+  <tr><td>Arquitetura: componentes</td><td>Detecção por câmera (Visão) · robô com sensores (Físico) · API e painel do comerciante (Produção) · pipeline de dados (Dados) · consultor de eficiência com LLM local (Inteligência) · alertas e resumos automáticos (Automação) · modelo de negócio (Pitch).</td></tr>
+  <tr><td>Fontes de dados</td><td>Clima (Open-Meteo) · bandeiras tarifárias e tarifas homologadas (dados abertos da ANEEL) · eventos das lojas (simulados, com geração documentada).</td></tr>
+  <tr><td>Modelos de IA utilizados</td><td>YOLO treinado para portas de refrigeração abertas · LLM local com base de conhecimento (RAG) · IA embarcada no robô.</td></tr>
+  <tr><td>URL do MVP e repositório</td><td><span class="preencher">URL pública do painel</span> · <span class="preencher">link do repositório principal</span></td></tr>
+  <tr><td>Indicadores de impacto</td><td>R$ e kWh de desperdício evitados por loja ao mês · tempo médio de porta aberta · percentual de alertas resolvidos em poucos minutos · número de lojas ativas.</td></tr>
+  <tr><td>ODS conectados</td><td>ODS 9, 11 e 13 <span class="preencher">(incluir 7 e 12 se o professor confirmar)</span>. Menos energia desperdiçada no comércio de bairro reduz custos de quem sustenta a economia local (11), leva monitoramento inteligente a quem não tinha acesso (9) e diminui emissões associadas à geração (13).</td></tr>
+</table>
+
+<!-- ============================ 03 ============================ -->
+<h2>03 · Diagrama do fluxo de dados, da fonte ao MVP</h2>
+<div class="fluxo">
+  <div><b>Fontes</b>Open-Meteo, ANEEL, eventos das lojas</div><span>→</span>
+  <div><b>Airflow 3</b>DAG diário, 06h</div><span>→</span>
+  <div><b>chegada/</b>1 arquivo por fonte e dia</div><span>→</span>
+  <div><b>Volume</b>upload manual, em lotes</div><span>→</span>
+  <div><b>Bronze</b>Auto Loader e COPY INTO</div><span>→</span>
+  <div><b>Prata</b>tipos, regras, MERGE</div><span>→</span>
+  <div><b>Ouro</b>fato + 3 dimensões</div><span>→</span>
+  <div><b>MVP</b>CSV na tela de indicadores</div>
+</div>
+<p>O Databricks Free Edition não se conecta ao Airflow nem ao painel. Os arquivos de <code>chegada/</code> sobem ao Volume pela interface, e a visão <code>vw_painel_indicadores</code> da Ouro é exportada em CSV, que o painel carrega.</p>
+
+<!-- ============================ 04 ============================ -->
+<h2>04 · Tabela de fontes</h2>
+<table>
+  <tr><th>Fonte</th><th>Origem</th><th>Formato</th><th>Frequência de coleta</th></tr>
+  <tr><td>Clima por hora (temperatura e umidade)</td><td>Open-Meteo, API pública sem chave (<code>api.open-meteo.com/v1/forecast</code>). Externa e real.</td><td>JSON com listas paralelas</td><td>Diária, 24 horas por arquivo</td></tr>
+  <tr><td>Bandeira tarifária acionada e adicional</td><td>ANEEL dados abertos, conjunto "Bandeiras Tarifárias", via API CKAN. Externa e real.</td><td>JSON Lines</td><td>Diária (a base é atualizada mensalmente)</td></tr>
+  <tr><td>Tarifa de aplicação B3 convencional</td><td>ANEEL dados abertos, conjunto "Tarifas de aplicação das distribuidoras", via API CKAN. Externa e real.</td><td>JSON Lines</td><td>Diária (muda no reajuste anual)</td></tr>
+  <tr><td>Eventos de desperdício das lojas</td><td>Simulador próprio (<code>dags/simulador_eventos.py</code>), no contrato de dados do grupo. Simulado.</td><td>JSON Lines</td><td>Diária</td></tr>
+  <tr><td>Cadastro de lojas e equipamentos</td><td>Arquivo fictício do grupo.</td><td>CSV</td><td>Carga única</td></tr>
+</table>
+<div class="nota">Os eventos são simulados porque não existe API pública com o consumo de energia de um comércio específico. As hipóteses do simulador estão documentadas no README do repositório e no próprio código. As fontes de clima e tarifa são reais.</div>
+
+<!-- ============================ 05 ============================ -->
+<h2>05 · Requisitos 01 a 09</h2>
+
+<h3>Requisito 01 · Duas ou mais fontes, ao menos uma externa</h3>
+<p>Quatro fontes do problema: três externas e reais (Open-Meteo e dois conjuntos da ANEEL) e uma simulada (eventos das lojas). O clima explica a carga de refrigeração; a tarifa e a bandeira transformam kWh em reais; os eventos são o desperdício em si.</p>
+<figure><img src="prints/01-fontes-no-navegador.png" alt="01-fontes-no-navegador.png"><figcaption>Figura 1. Resposta das APIs do Open-Meteo e da ANEEL testadas no navegador.</figcaption></figure>
+
+<h3>Requisito 02 · DAG agendado gravando em chegada/</h3>
+<p>O DAG <code>gs_energia_coleta</code> roda todo dia às 06h (<code>schedule="0 6 * * *"</code>, fuso de Brasília) e coleta o dia anterior. Cada coleta grava um arquivo com a data no nome, por exemplo <code>chegada/clima/clima_2026-11-08.json</code>.</p>
+<figure><img src="prints/02-pasta-chegada.png" alt="02-pasta-chegada.png"><figcaption>Figura 2. Pasta chegada/ com um arquivo por fonte e por dia.</figcaption></figure>
+
+<h3>Requisito 03 · Paralelismo, conferência e chaves fora do código</h3>
+<p>As tarefas <code>coletar_clima</code>, <code>coletar_bandeiras</code>, <code>coletar_tarifas</code> e <code>coletar_eventos</code> rodam em paralelo. A tarefa <code>conferir_chegada</code> verifica se os quatro arquivos do dia existem, não estão vazios e são JSON válido; se não, falha a execução. A configuração fica em Airflow Variables. Nenhuma das fontes exige chave de API; não há segredo no código nem no repositório.</p>
+<figure><img src="prints/03-airflow-variables.png" alt="03-airflow-variables.png"><figcaption>Figura 3. Variables do Airflow usadas pelo DAG.</figcaption></figure>
+<figure><img src="prints/03-log-conferir-chegada.png" alt="03-log-conferir-chegada.png"><figcaption>Figura 4. Log da tarefa conferir_chegada com o número de registros de cada arquivo.</figcaption></figure>
+
+<h3>Requisito 04 · Dois ou mais lotes no Volume</h3>
+<p>Os arquivos foram enviados ao Volume <code>workspace.energia_lucro.chegada</code> em <span class="preencher">2</span> lotes: o 1º com os dias <span class="preencher">01/11 a 05/11</span> e o 2º com os dias <span class="preencher">06/11 a 12/11</span>.</p>
+<figure><img src="prints/04-volume-lote1.png" alt="04-volume-lote1.png"><figcaption>Figura 5. Volume depois do 1º lote.</figcaption></figure>
+<figure><img src="prints/04-volume-lote2.png" alt="04-volume-lote2.png"><figcaption>Figura 6. Volume depois do 2º lote, com os arquivos dos novos dias.</figcaption></figure>
+
+<h3>Requisito 05 · Bronze incremental e sem duplicação</h3>
+<p>As quatro fontes entram por Auto Loader (<code>cloudFiles</code>, <code>trigger(availableNow=True)</code>), com checkpoint no Volume; o cadastro entra por <code>COPY INTO</code>. A Bronze guarda o dado bruto mais <code>arquivo_origem</code> e <code>carregado_em</code>. As contagens estão na seção 07.</p>
+<figure><img src="prints/05-bronze-codigo.png" alt="05-bronze-codigo.png"><figcaption>Figura 7. Célula do Auto Loader no notebook 01_bronze.</figcaption></figure>
+
+<h3>Requisito 06 · Prata: tratamento, MERGE e regras de qualidade</h3>
+<p>Tipos convertidos com <code>try_cast</code> e <code>try_to_timestamp</code>; nulos e inválidos são barrados ou recalculados (custo nulo é refeito pela fórmula do contrato). O MERGE usa a chave de cada tabela (<code>id</code> nos eventos). Regras de qualidade dos eventos e total barrado na última execução:</p>
+<table>
+  <tr><th>Regra</th><th>Descrição</th><th>Total avaliado</th><th>Total barrado</th></tr>
+  <tr><td>R1</td><td>Duração nula, menor ou igual a zero ou acima de 4 horas</td><td><span class="preencher">n</span></td><td><span class="preencher">n</span></td></tr>
+  <tr><td>R2</td><td>Loja ou equipamento fora do cadastro</td><td><span class="preencher">n</span></td><td><span class="preencher">n</span></td></tr>
+  <tr><td>R3</td><td>Início inválido ou no futuro</td><td><span class="preencher">n</span></td><td><span class="preencher">n</span></td></tr>
+  <tr><td>R0, R4, D1</td><td>Id nulo · tipo ou origem fora do contrato · id repetido</td><td><span class="preencher">n</span></td><td><span class="preencher">n</span></td></tr>
+</table>
+<figure><img src="prints/06-prata-qualidade.png" alt="06-prata-qualidade.png"><figcaption>Figura 8. Total barrado por regra de qualidade (prata_qualidade_log).</figcaption></figure>
+<figure><img src="prints/06-prata-merge.png" alt="06-prata-merge.png"><figcaption>Figura 9. Resultado do MERGE em prata_eventos e contagem igual depois de rodar duas vezes.</figcaption></figure>
+
+<h3>Requisito 07 · Ouro dimensional e 5 consultas</h3>
+<p>Uma fato e três dimensões: <code>fato_desperdicio</code> (um evento por linha), <code>dim_loja</code>, <code>dim_equipamento</code> e <code>dim_tempo</code> (com a bandeira e o clima do dia). As cinco consultas estão na seção 08.</p>
+<figure><img src="prints/07-ouro-tabelas.png" alt="07-ouro-tabelas.png"><figcaption>Figura 10. Tabelas da Ouro no catálogo e amostra da fato_desperdicio.</figcaption></figure>
+
+<h3>Requisito 08 · LGPD na Ouro e uso pelo MVP</h3>
+<p>O único dado pessoal do produto é o cadastro do responsável pela loja. Na <code>dim_loja</code>, nome, e-mail e telefone aparecem só mascarados, e o e-mail também como hash SHA-256 com sal (o sal não é versionado). Nenhuma imagem de câmera é armazenada. O cadastro usado é fictício.</p>
+<figure><img src="prints/08-lgpd-prata-x-ouro.png" alt="08-lgpd-prata-x-ouro.png"><figcaption>Figura 11. Comparação: dado em claro na Prata e protegido (máscara e hash) na Ouro.</figcaption></figure>
+<p>O MVP usa a visão <code>vw_painel_indicadores</code> (desperdício por loja, equipamento e dia), exportada em CSV pelo notebook 05. O painel carrega o arquivo na tela de indicadores. A visão não tem dado pessoal.</p>
+<figure><img src="prints/08-painel-indicadores.png" alt="08-painel-indicadores.png"><figcaption>Figura 12. Tela de indicadores do painel exibindo os dados da Ouro.</figcaption></figure>
+
+<h3>Requisito 09 · README e organização</h3>
+<p>Repositório com <code>dags/</code>, <code>databricks/</code>, <code>amostras/</code> e <code>README.md</code> (integrantes, Ficha Técnica, arquitetura e passo a passo). Sem chaves, senhas ou dados pessoais reais.</p>
+<figure><img src="prints/09-repositorio.png" alt="09-repositorio.png"><figcaption>Figura 13. Página inicial do repositório público no GitHub.</figcaption></figure>
+
+<!-- ============================ 06 ============================ -->
+<h2>06 · Prints do Airflow</h2>
+<figure><img src="prints/06-airflow-graph.png" alt="06-airflow-graph.png"><figcaption>Figura 14. Visão Graph: inicio, quatro coletas em paralelo e conferir_chegada.</figcaption></figure>
+<figure><img src="prints/06-airflow-grid.png" alt="06-airflow-grid.png"><figcaption>Figura 15. Visão Grid com as execuções diárias concluídas.</figcaption></figure>
+
+<!-- ============================ 07 ============================ -->
+<h2>07 · Contagens da Bronze</h2>
+<p>Linhas em cada tabela Bronze em três momentos. A 3ª coluna de execução prova que rodar de novo sem arquivo novo não insere nada.</p>
+<table>
+  <tr><th>Tabela</th><th>Antes do 1º lote</th><th>Depois do 1º lote</th><th>Depois do 2º lote</th><th>Depois da 2ª execução sem arquivo novo</th></tr>
+  <tr><td>bronze_eventos</td><td>0</td><td><span class="preencher">n</span></td><td><span class="preencher">n</span></td><td><span class="preencher">igual</span></td></tr>
+  <tr><td>bronze_clima</td><td>0</td><td><span class="preencher">n</span></td><td><span class="preencher">n</span></td><td><span class="preencher">igual</span></td></tr>
+  <tr><td>bronze_bandeiras</td><td>0</td><td><span class="preencher">n</span></td><td><span class="preencher">n</span></td><td><span class="preencher">igual</span></td></tr>
+  <tr><td>bronze_tarifas</td><td>0</td><td><span class="preencher">n</span></td><td><span class="preencher">n</span></td><td><span class="preencher">igual</span></td></tr>
+</table>
+<figure><img src="prints/07-bronze-lote1.png" alt="07-bronze-lote1.png"><figcaption>Figura 16. Contagens antes e depois do 1º lote.</figcaption></figure>
+<figure><img src="prints/07-bronze-lote2.png" alt="07-bronze-lote2.png"><figcaption>Figura 17. Contagens antes e depois do 2º lote: só as linhas dos arquivos novos entram.</figcaption></figure>
+<figure><img src="prints/07-bronze-reexecucao.png" alt="07-bronze-reexecucao.png"><figcaption>Figura 18. Segunda execução sem arquivo novo: zero linhas novas em todas as fontes.</figcaption></figure>
+
+<!-- ============================ 08 ============================ -->
+<h2>08 · As 5 consultas SQL</h2>
+<div class="nota">Os eventos das lojas são simulados. As consultas mostram como cada pergunta do comerciante é respondida; os valores refletem as hipóteses do simulador até a entrada de eventos reais (Visão e Maker Lab).</div>
+
+<h3>Consulta 1 · Quanto cada loja desperdiçou no mês, em R$ e em kWh?</h3>
+<pre>SELECT l.loja_id, t.periodo, count(*) AS eventos, count(DISTINCT t.data) AS dias_com_dados,
+       round(sum(f.kwh_desperdicado), 2)  AS kwh_desperdicado,
+       round(sum(f.custo_estimado_rs), 2) AS custo_estimado_rs,
+       round(sum(f.custo_aneel_rs), 2)    AS custo_aneel_rs,
+       round(sum(f.custo_estimado_rs) / count(DISTINCT t.data) * 30, 2) AS projecao_rs_30_dias
+FROM fato_desperdicio f
+JOIN dim_loja l  ON l.loja_sk = f.loja_sk
+JOIN dim_tempo t ON t.data_id = f.data_id
+GROUP BY l.loja_id, t.periodo
+ORDER BY t.periodo, custo_estimado_rs DESC;</pre>
+<figure><img src="prints/08-consulta1.png" alt="08-consulta1.png"><figcaption>Figura 19. Resultado da consulta 1.</figcaption></figure>
+<p><b>Interpretação:</b> <span class="preencher">escrever a partir do resultado: qual loja desperdiça mais, quanto em R$ e kWh no período e a projeção para 30 dias. Comentar a diferença entre o custo pela tarifa provisória do grupo (R$ 0,90/kWh) e pela tarifa homologada da ANEEL sem tributos.</span></p>
+
+<h3>Consulta 2 · Quais equipamentos mais desperdiçam?</h3>
+<pre>SELECT l.loja_id, q.equipamento_id, q.categoria, count(*) AS eventos,
+       round(avg(f.duracao_s), 0) AS duracao_media_s,
+       round(100 * avg(CASE WHEN f.acima_limite_alerta THEN 1 ELSE 0 END), 1) AS pct_acima_de_60s,
+       round(sum(f.kwh_desperdicado), 2)  AS kwh_desperdicado,
+       round(sum(f.custo_estimado_rs), 2) AS custo_estimado_rs,
+       round(100 * sum(f.custo_estimado_rs)
+             / sum(sum(f.custo_estimado_rs)) OVER (PARTITION BY l.loja_id), 1) AS pct_do_custo_da_loja
+FROM fato_desperdicio f
+JOIN dim_loja l        ON l.loja_sk = f.loja_sk
+JOIN dim_equipamento q ON q.equipamento_sk = f.equipamento_sk
+GROUP BY l.loja_id, q.equipamento_id, q.categoria
+ORDER BY l.loja_id, custo_estimado_rs DESC;</pre>
+<figure><img src="prints/08-consulta2.png" alt="08-consulta2.png"><figcaption>Figura 20. Resultado da consulta 2.</figcaption></figure>
+<p><b>Interpretação:</b> <span class="preencher">escrever a partir do resultado: qual equipamento concentra o custo em cada loja, e se o peso vem de muitos eventos curtos (refrigeração) ou de poucos eventos longos (iluminação). Indicar onde o comerciante deve agir primeiro.</span></p>
+
+<h3>Consulta 3 · Em que horários o desperdício se concentra?</h3>
+<pre>SELECT f.hora, count(*) AS eventos,
+       count_if(f.tipo = 'porta_aberta') AS portas_abertas,
+       count_if(f.tipo = 'luz_acesa_sem_necessidade') AS luzes_acesas,
+       round(sum(f.kwh_desperdicado), 2)  AS kwh_desperdicado,
+       round(sum(f.custo_estimado_rs), 2) AS custo_estimado_rs,
+       round(100 * sum(f.custo_estimado_rs) / sum(sum(f.custo_estimado_rs)) OVER (), 1) AS pct_do_custo_total
+FROM fato_desperdicio f
+GROUP BY f.hora
+ORDER BY f.hora;</pre>
+<figure><img src="prints/08-consulta3.png" alt="08-consulta3.png"><figcaption>Figura 21. Resultado da consulta 3.</figcaption></figure>
+<p><b>Interpretação:</b> <span class="preencher">escrever a partir do resultado: faixa de horas com mais portas abertas, e o peso das luzes acesas depois do fechamento (20h e 21h). Relacionar com a ação: reforçar a atenção no pico e desligar a iluminação ao fechar.</span></p>
+
+<h3>Consulta 4 · Horas mais quentes têm mais desperdício na refrigeração?</h3>
+<pre>WITH horas AS (
+  SELECT data_hora, temperatura_c,
+         CASE WHEN temperatura_c &lt; 18 THEN '1) abaixo de 18 °C'
+              WHEN temperatura_c &lt; 22 THEN '2) 18 a 21,9 °C'
+              WHEN temperatura_c &lt; 26 THEN '3) 22 a 25,9 °C'
+              WHEN temperatura_c &lt; 30 THEN '4) 26 a 29,9 °C'
+              ELSE '5) 30 °C ou mais' END AS faixa_temperatura
+  FROM prata_clima
+  WHERE hour(data_hora) BETWEEN 7 AND 19
+    AND to_date(data_hora) IN (SELECT data FROM dim_tempo)
+)
+SELECT h.faixa_temperatura,
+       count(DISTINCT h.data_hora) AS horas_observadas,
+       count(f.evento_id)          AS portas_abertas,
+       round(count(f.evento_id) / count(DISTINCT h.data_hora), 2) AS eventos_por_hora,
+       round(avg(f.duracao_s), 0)  AS duracao_media_s,
+       round(sum(f.kwh_desperdicado) / count(DISTINCT h.data_hora), 4) AS kwh_por_hora
+FROM horas h
+LEFT JOIN fato_desperdicio f ON f.hora_referencia = h.data_hora AND f.tipo = 'porta_aberta'
+GROUP BY h.faixa_temperatura
+ORDER BY h.faixa_temperatura;</pre>
+<figure><img src="prints/08-consulta4.png" alt="08-consulta4.png"><figcaption>Figura 22. Resultado da consulta 4.</figcaption></figure>
+<p><b>Interpretação:</b> <span class="preencher">escrever a partir do resultado: como eventos_por_hora varia entre as faixas de temperatura.</span> A temperatura é real (Open-Meteo). Nos eventos simulados, as aberturas seguem um perfil horário com pico às 14h, que também é a hora mais quente; por isso a relação observada é a hipótese a validar com eventos reais, e não uma medição.</p>
+
+<h3>Consulta 5 (impacto) · Quanto a loja deixou de desperdiçar depois dos alertas?</h3>
+<pre>WITH diario AS (
+  SELECT l.loja_id, t.data, f.fase_alertas,
+         sum(f.custo_estimado_rs) AS rs_dia,
+         sum(f.kwh_desperdicado)  AS kwh_dia,
+         avg(CASE WHEN f.tipo = 'porta_aberta' THEN f.duracao_s END) AS porta_media_s
+  FROM fato_desperdicio f
+  JOIN dim_loja l  ON l.loja_sk = f.loja_sk
+  JOIN dim_tempo t ON t.data_id = f.data_id
+  GROUP BY l.loja_id, t.data, f.fase_alertas
+)
+SELECT loja_id,
+       round(avg(CASE WHEN fase_alertas = 'antes'  THEN rs_dia END), 4) AS rs_dia_antes,
+       round(avg(CASE WHEN fase_alertas = 'depois' THEN rs_dia END), 4) AS rs_dia_depois,
+       round(100 * (1 - avg(CASE WHEN fase_alertas = 'depois' THEN rs_dia END)
+                      / avg(CASE WHEN fase_alertas = 'antes'  THEN rs_dia END)), 1) AS reducao_pct,
+       round(30 * (avg(CASE WHEN fase_alertas = 'antes'  THEN rs_dia END)
+                 - avg(CASE WHEN fase_alertas = 'depois' THEN rs_dia END)), 2) AS rs_evitados_em_30_dias,
+       round(30 * (avg(CASE WHEN fase_alertas = 'antes'  THEN kwh_dia END)
+                 - avg(CASE WHEN fase_alertas = 'depois' THEN kwh_dia END)), 2) AS kwh_evitados_em_30_dias,
+       round(avg(CASE WHEN fase_alertas = 'antes'  THEN porta_media_s END), 0) AS porta_media_s_antes,
+       round(avg(CASE WHEN fase_alertas = 'depois' THEN porta_media_s END), 0) AS porta_media_s_depois
+FROM diario
+GROUP BY loja_id
+ORDER BY loja_id;</pre>
+<p>(Versão resumida; a consulta completa, com dias em cada fase e percentual de portas fechadas em até 2 minutos, está em <code>databricks/04_consultas.sql</code>.)</p>
+<figure><img src="prints/08-consulta5.png" alt="08-consulta5.png"><figcaption>Figura 23. Resultado da consulta 5, de impacto.</figcaption></figure>
+<p><b>Interpretação:</b> <span class="preencher">escrever a partir do resultado: redução percentual, R$ e kWh evitados em 30 dias por loja e queda no tempo médio de porta aberta.</span> Esta consulta calcula os indicadores de impacto da Ficha Técnica. Com dados simulados, a redução decorre da hipótese de que 70% dos alertas são atendidos em até 60 segundos; a mesma consulta mede o impacto real quando houver lojas piloto.</p>
+
+<!-- ============================ 09 ============================ -->
+<h2>09 · Conclusão técnica e link do repositório</h2>
+<p>O pipeline cobre o caminho completo: coleta diária orquestrada no Airflow 3, com quatro tarefas em paralelo e conferência dos arquivos; ingestão incremental e idempotente na Bronze por Auto Loader e COPY INTO; Prata com tipagem, regras de qualidade contabilizadas e MERGE pela chave; e Ouro dimensional, com dados pessoais protegidos, de onde sai o CSV que o painel exibe.</p>
+<p>Decisões que valem registro: (1) a coleta usa o dia anterior ao disparo, calculado no fuso de Brasília, porque no Airflow 3 a data lógica de um DAG com cron é o instante do disparo; (2) a Bronze fica em texto e a tipagem acontece na Prata, para que registro defeituoso seja barrado com motivo em vez de quebrar a carga; (3) o custo é guardado de duas formas, pela tarifa provisória do contrato do grupo e pela tarifa B3 homologada da ANEEL mais a bandeira do mês, sem tributos.</p>
+<p>Limitações: os eventos das lojas são simulados, e os parâmetros de potência e perda são estimativas do grupo. <span class="preencher">Acrescentar o que foi observado na execução: volumes, tempo de carga, dificuldades encontradas.</span> Próximo passo: substituir o simulador pelos eventos reais da detecção por câmera e do robô, que já usam o mesmo contrato de dados.</p>
+<p><b>Repositório:</b> <span class="preencher">https://github.com/usuario/repositorio</span></p>
+
+<script>
+  // Mostra um quadro "falta o print" quando a imagem ainda não foi salva na pasta prints/.
+  document.querySelectorAll('figure img').forEach(function (img) {
+    img.addEventListener('error', function () {
+      var aviso = document.createElement('div');
+      aviso.className = 'falta';
+      aviso.textContent = 'FALTA O PRINT: prints/' + img.getAttribute('alt');
+      img.replaceWith(aviso);
+    });
+    if (img.complete && img.naturalWidth === 0) { img.dispatchEvent(new Event('error')); }
+  });
+</script>
+</body>
+</html>

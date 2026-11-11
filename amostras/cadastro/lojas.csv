@@ -1,0 +1,3 @@
+loja_id,nome_fantasia,tipo,cidade,uf,hora_abre,hora_fecha,responsavel_nome,responsavel_email,responsavel_telefone,data_inicio_alertas
+padaria-01,Padaria Exemplo (ficticia),padaria,Sao Paulo,SP,6,20,Maria Exemplo da Silva,maria.exemplo@exemplo.com.br,(11) 90000-0001,2026-11-10
+mercado-01,Mercadinho Exemplo (ficticio),mercado,Sao Paulo,SP,7,21,Joao Exemplo de Souza,joao.exemplo@exemplo.com.br,(11) 90000-0002,2026-11-10

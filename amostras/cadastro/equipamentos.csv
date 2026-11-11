@@ -1,0 +1,12 @@
+loja_id,equipamento_id,categoria,potencia_kw,fator_perda
+padaria-01,expositor-1,refrigeracao,0.50,0.30
+padaria-01,expositor-2,refrigeracao,0.50,0.30
+padaria-01,freezer-1,refrigeracao,0.50,0.30
+padaria-01,iluminacao-salao,iluminacao,0.30,1.00
+mercado-01,expositor-1,refrigeracao,0.50,0.30
+mercado-01,expositor-2,refrigeracao,0.50,0.30
+mercado-01,expositor-3,refrigeracao,0.50,0.30
+mercado-01,freezer-1,refrigeracao,0.50,0.30
+mercado-01,freezer-2,refrigeracao,0.50,0.30
+mercado-01,iluminacao-salao,iluminacao,0.30,1.00
+mercado-01,iluminacao-estoque,iluminacao,0.10,1.00

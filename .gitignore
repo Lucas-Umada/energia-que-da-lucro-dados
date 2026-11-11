@@ -1,0 +1,21 @@
+# Pasta de pouso do Airflow: os arquivos coletados não são versionados.
+# Um pouco de cada fonte fica em amostras/.
+chegada/
+
+# Segredos e configuração local
+.env
+*.env
+airflow.cfg
+airflow.db
+webserver_config.py
+logs/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Exportações e rascunhos
+*.tmp
+.DS_Store
