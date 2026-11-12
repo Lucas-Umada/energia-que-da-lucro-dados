@@ -3,14 +3,13 @@
 -- MAGIC # 00 · Setup — Energia que dá Lucro
 -- MAGIC Cria o esquema e o Volume de chegada. Rodar uma vez.
 -- MAGIC
--- MAGIC Depois de rodar, envie os arquivos **pela interface** (Catalog > workspace > energia_lucro > chegada > *Upload to this volume*),
--- MAGIC mantendo as subpastas da pasta `chegada/` do Airflow:
+-- MAGIC Depois de rodar, envie os arquivos **pela interface** (Catalog > workspace > energia_lucro > chegada > *Upload to this volume*):
 -- MAGIC
--- MAGIC | Subpasta no Volume | O que enviar | Quando |
+-- MAGIC | Destino no Volume | O que enviar | Quando |
 -- MAGIC |---|---|---|
--- MAGIC | `cadastro/` | `lojas.csv` e `equipamentos.csv` (de `amostras/cadastro/`) | uma vez |
--- MAGIC | `clima/`, `bandeiras/`, `tarifas/`, `eventos/` | arquivos dos dias do **1º lote** | 1º lote |
--- MAGIC | as mesmas quatro | arquivos dos dias seguintes | **2º lote**, depois de rodar a Bronze uma vez |
+-- MAGIC | raiz | `lojas.csv` e `equipamentos.csv` (de `amostras/cadastro/`) | uma vez |
+-- MAGIC | `lote1/clima`, `lote1/bandeiras`, `lote1/tarifas`, `lote1/eventos` | arquivos dos dias do **1º lote** | 1º lote |
+-- MAGIC | `lote2/...` (mesmas quatro subpastas) | arquivos dos dias seguintes | **2º lote**, depois de rodar a Bronze uma vez |
 -- MAGIC
 -- MAGIC O Databricks Free Edition não se conecta ao Airflow, por isso o envio é manual, em lotes.
 

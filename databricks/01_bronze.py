@@ -2,7 +2,8 @@
 # MAGIC %md
 # MAGIC # 01 · Bronze — ingestão incremental (requisitos 04 e 05)
 # MAGIC
-# MAGIC - **Auto Loader** (`cloudFiles`) lê as quatro fontes do Volume. O checkpoint guarda quais arquivos já entraram:
+# MAGIC - Layout do Volume: `lojas.csv` e `equipamentos.csv` na raiz; cada lote em `loteN/<fonte>/` (`lote1/clima/`, `lote2/eventos/`, ...).
+# MAGIC - **Auto Loader** (`cloudFiles`) lê as quatro fontes de todos os lotes (`lote*/<fonte>`). O checkpoint guarda quais arquivos já entraram:
 # MAGIC   no 2º lote só os arquivos novos são lidos, e rodar de novo sem arquivo novo não insere nada.
 # MAGIC - **COPY INTO** carrega o cadastro (CSV), também sem duplicar.
 # MAGIC - A Bronze guarda o dado bruto, mais `arquivo_origem` e `carregado_em`.
@@ -69,7 +70,7 @@ def carregar_bronze(fonte: str, dicas_de_schema: str | None) -> dict:
         leitor = leitor.option("cloudFiles.schemaHints", dicas_de_schema)
 
     consulta = (
-        leitor.load(f"{BASE}/{fonte}")
+        leitor.load(f"{BASE}/lote*/{fonte}")
         .withColumn("arquivo_origem", F.col("_metadata.file_path"))
         .withColumn("carregado_em", F.current_timestamp())
         .writeStream.option("checkpointLocation", f"{CONTROLE}/checkpoint_{fonte}")
@@ -153,7 +154,7 @@ display(df_resultado)
 # MAGIC COPY INTO workspace.energia_lucro.bronze_cadastro_lojas
 # MAGIC FROM (
 # MAGIC   SELECT *, _metadata.file_path AS arquivo_origem, current_timestamp() AS carregado_em
-# MAGIC   FROM '/Volumes/workspace/energia_lucro/chegada/cadastro/'
+# MAGIC   FROM '/Volumes/workspace/energia_lucro/chegada/'
 # MAGIC )
 # MAGIC FILEFORMAT = CSV
 # MAGIC FILES = ('lojas.csv')
@@ -168,7 +169,7 @@ display(df_resultado)
 # MAGIC COPY INTO workspace.energia_lucro.bronze_cadastro_equipamentos
 # MAGIC FROM (
 # MAGIC   SELECT *, _metadata.file_path AS arquivo_origem, current_timestamp() AS carregado_em
-# MAGIC   FROM '/Volumes/workspace/energia_lucro/chegada/cadastro/'
+# MAGIC   FROM '/Volumes/workspace/energia_lucro/chegada/'
 # MAGIC )
 # MAGIC FILEFORMAT = CSV
 # MAGIC FILES = ('equipamentos.csv')
