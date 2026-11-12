@@ -81,7 +81,7 @@
   <tr><td>Arquitetura: componentes</td><td>Detecção por câmera (Visão) · robô com sensores (Físico) · API e painel do comerciante (Produção) · pipeline de dados (Dados) · consultor de eficiência com LLM local (Inteligência) · alertas e resumos automáticos (Automação) · modelo de negócio (Pitch).</td></tr>
   <tr><td>Fontes de dados</td><td>Clima (Open-Meteo) · bandeiras tarifárias e tarifas homologadas (dados abertos da ANEEL) · eventos das lojas (simulados, com geração documentada).</td></tr>
   <tr><td>Modelos de IA utilizados</td><td>YOLO treinado para portas de refrigeração abertas · LLM local com base de conhecimento (RAG) · IA embarcada no robô.</td></tr>
-  <tr><td>URL do MVP e repositório</td><td><span class="preencher">URL pública do painel</span> · <span class="preencher">link do repositório principal</span></td></tr>
+  <tr><td>URL do MVP e repositório</td><td><span class="preencher">URL pública do painel</span> · repositório do componente Dados: https://github.com/Lucas-Umada/energia-que-da-lucro-dados</td></tr>
   <tr><td>Indicadores de impacto</td><td>R$ e kWh de desperdício evitados por loja ao mês · tempo médio de porta aberta · percentual de alertas resolvidos em poucos minutos · número de lojas ativas.</td></tr>
   <tr><td>ODS conectados</td><td>ODS 9, 11 e 13 <span class="preencher">(incluir 7 e 12 se o professor confirmar)</span>. Menos energia desperdiçada no comércio de bairro reduz custos de quem sustenta a economia local (11), leva monitoramento inteligente a quem não tinha acesso (9) e diminui emissões associadas à geração (13).</td></tr>
 </table>
@@ -130,7 +130,7 @@
 <figure><img src="prints/03-log-conferir-chegada.png" alt="03-log-conferir-chegada.png"><figcaption>Figura 4. Log da tarefa conferir_chegada com o número de registros de cada arquivo.</figcaption></figure>
 
 <h3>Requisito 04 · Dois ou mais lotes no Volume</h3>
-<p>Os arquivos foram enviados ao Volume <code>workspace.energia_lucro.chegada</code> em <span class="preencher">2</span> lotes: o 1º com os dias <span class="preencher">01/11 a 05/11</span> e o 2º com os dias <span class="preencher">06/11 a 12/11</span>.</p>
+<p>Os arquivos foram enviados ao Volume <code>workspace.energia_lucro.chegada</code> em 2 lotes, cada um em sua pasta: <code>lote1/</code> com os dias 01/11 a 05/11 e <code>lote2/</code> com os dias 06/11 a 10/11 de 2026 (20 arquivos por lote, 5 de cada fonte). O cadastro (<code>lojas.csv</code> e <code>equipamentos.csv</code>) fica na raiz do Volume.</p>
 <figure><img src="prints/04-volume-lote1.png" alt="04-volume-lote1.png"><figcaption>Figura 5. Volume depois do 1º lote.</figcaption></figure>
 <figure><img src="prints/04-volume-lote2.png" alt="04-volume-lote2.png"><figcaption>Figura 6. Volume depois do 2º lote, com os arquivos dos novos dias.</figcaption></figure>
 
@@ -140,12 +140,13 @@
 
 <h3>Requisito 06 · Prata: tratamento, MERGE e regras de qualidade</h3>
 <p>Tipos convertidos com <code>try_cast</code> e <code>try_to_timestamp</code>; nulos e inválidos são barrados ou recalculados (custo nulo é refeito pela fórmula do contrato). O MERGE usa a chave de cada tabela (<code>id</code> nos eventos). Regras de qualidade dos eventos e total barrado na última execução:</p>
+<p>Dos 799 registros da Bronze, 17 foram barrados por alguma regra e 4 eram repetição de um id já válido; a Prata ficou com 778 eventos, um por id. Nas fontes externas (clima, bandeiras e tarifas) nenhuma linha foi barrada.</p>
 <table>
   <tr><th>Regra</th><th>Descrição</th><th>Total avaliado</th><th>Total barrado</th></tr>
-  <tr><td>R1</td><td>Duração nula, menor ou igual a zero ou acima de 4 horas</td><td><span class="preencher">n</span></td><td><span class="preencher">n</span></td></tr>
-  <tr><td>R2</td><td>Loja ou equipamento fora do cadastro</td><td><span class="preencher">n</span></td><td><span class="preencher">n</span></td></tr>
-  <tr><td>R3</td><td>Início inválido ou no futuro</td><td><span class="preencher">n</span></td><td><span class="preencher">n</span></td></tr>
-  <tr><td>R0, R4, D1</td><td>Id nulo · tipo ou origem fora do contrato · id repetido</td><td><span class="preencher">n</span></td><td><span class="preencher">n</span></td></tr>
+  <tr><td>R1</td><td>Duração nula, menor ou igual a zero ou acima de 4 horas</td><td>799</td><td>5</td></tr>
+  <tr><td>R2</td><td>Loja ou equipamento fora do cadastro</td><td>799</td><td>8</td></tr>
+  <tr><td>R3</td><td>Início inválido ou no futuro</td><td>799</td><td>4</td></tr>
+  <tr><td>R0, R4, D1</td><td>Id nulo · tipo ou origem fora do contrato · id repetido</td><td>799 · 799 · 782</td><td>0 · 0 · 4</td></tr>
 </table>
 <figure><img src="prints/06-prata-qualidade.png" alt="06-prata-qualidade.png"><figcaption>Figura 8. Total barrado por regra de qualidade (prata_qualidade_log).</figcaption></figure>
 <figure><img src="prints/06-prata-merge.png" alt="06-prata-merge.png"><figcaption>Figura 9. Resultado do MERGE em prata_eventos e contagem igual depois de rodar duas vezes.</figcaption></figure>
@@ -171,13 +172,13 @@
 
 <!-- ============================ 07 ============================ -->
 <h2>07 · Contagens da Bronze</h2>
-<p>Linhas em cada tabela Bronze em três momentos. A 3ª coluna de execução prova que rodar de novo sem arquivo novo não insere nada.</p>
+<p>Linhas em cada tabela Bronze em três momentos. No 2º lote entraram só as 410 linhas dos 5 arquivos novos de eventos (389 + 410 = 799), e a execução seguinte, sem arquivo novo, não inseriu nada. Em <code>bronze_clima</code> cada arquivo é uma linha (o JSON do dia inteiro).</p>
 <table>
   <tr><th>Tabela</th><th>Antes do 1º lote</th><th>Depois do 1º lote</th><th>Depois do 2º lote</th><th>Depois da 2ª execução sem arquivo novo</th></tr>
-  <tr><td>bronze_eventos</td><td>0</td><td><span class="preencher">n</span></td><td><span class="preencher">n</span></td><td><span class="preencher">igual</span></td></tr>
-  <tr><td>bronze_clima</td><td>0</td><td><span class="preencher">n</span></td><td><span class="preencher">n</span></td><td><span class="preencher">igual</span></td></tr>
-  <tr><td>bronze_bandeiras</td><td>0</td><td><span class="preencher">n</span></td><td><span class="preencher">n</span></td><td><span class="preencher">igual</span></td></tr>
-  <tr><td>bronze_tarifas</td><td>0</td><td><span class="preencher">n</span></td><td><span class="preencher">n</span></td><td><span class="preencher">igual</span></td></tr>
+  <tr><td>bronze_eventos</td><td>0</td><td>389</td><td>799</td><td>799 (0 novas)</td></tr>
+  <tr><td>bronze_clima</td><td>0</td><td>5</td><td>10</td><td>10 (0 novas)</td></tr>
+  <tr><td>bronze_bandeiras</td><td>0</td><td>715</td><td>1.430</td><td>1.430 (0 novas)</td></tr>
+  <tr><td>bronze_tarifas</td><td>0</td><td>280</td><td>560</td><td>560 (0 novas)</td></tr>
 </table>
 <figure><img src="prints/07-bronze-lote1.png" alt="07-bronze-lote1.png"><figcaption>Figura 16. Contagens antes e depois do 1º lote.</figcaption></figure>
 <figure><img src="prints/07-bronze-lote2.png" alt="07-bronze-lote2.png"><figcaption>Figura 17. Contagens antes e depois do 2º lote: só as linhas dos arquivos novos entram.</figcaption></figure>
@@ -199,7 +200,7 @@ JOIN dim_tempo t ON t.data_id = f.data_id
 GROUP BY l.loja_id, t.periodo
 ORDER BY t.periodo, custo_estimado_rs DESC;</pre>
 <figure><img src="prints/08-consulta1.png" alt="08-consulta1.png"><figcaption>Figura 19. Resultado da consulta 1.</figcaption></figure>
-<p><b>Interpretação:</b> <span class="preencher">escrever a partir do resultado: qual loja desperdiça mais, quanto em R$ e kWh no período e a projeção para 30 dias. Comentar a diferença entre o custo pela tarifa provisória do grupo (R$ 0,90/kWh) e pela tarifa homologada da ANEEL sem tributos.</span></p>
+<p><b>Interpretação:</b> em 10 dias de novembro, o mercado-01 teve 476 eventos, 4,61 kWh e R$ 4,15 de desperdício; a padaria-01, 302 eventos, 2,44 kWh e R$ 2,19. Projetado para 30 dias, isso dá R$ 12,44 e R$ 6,58 por loja. O mercado desperdiça quase o dobro porque tem mais equipamentos (7 contra 4). Pela tarifa B3 homologada da ANEEL, sem tributos, os mesmos kWh valem R$ 3,64 e R$ 1,92, cerca de 12% menos que pela tarifa provisória de R$ 0,90/kWh do grupo. Os valores são pequenos porque a potência e o fator de perda dos equipamentos são estimativas conservadoras do grupo; o que o painel mostra ao comerciante é a proporção entre lojas e a evolução no tempo.</p>
 
 <h3>Consulta 2 · Quais equipamentos mais desperdiçam?</h3>
 <pre>SELECT l.loja_id, q.equipamento_id, q.categoria, count(*) AS eventos,
@@ -215,7 +216,7 @@ JOIN dim_equipamento q ON q.equipamento_sk = f.equipamento_sk
 GROUP BY l.loja_id, q.equipamento_id, q.categoria
 ORDER BY l.loja_id, custo_estimado_rs DESC;</pre>
 <figure><img src="prints/08-consulta2.png" alt="08-consulta2.png"><figcaption>Figura 20. Resultado da consulta 2.</figcaption></figure>
-<p><b>Interpretação:</b> <span class="preencher">escrever a partir do resultado: qual equipamento concentra o custo em cada loja, e se o peso vem de muitos eventos curtos (refrigeração) ou de poucos eventos longos (iluminação). Indicar onde o comerciante deve agir primeiro.</span></p>
+<p><b>Interpretação:</b> a iluminação concentra o custo com poucos eventos longos. Na padaria-01, a luz do salão teve só 6 eventos (média de 45 minutos cada) e responde por 55,1% do custo. No mercado-01, o salão (4 eventos, média de 86 minutos) e o estoque (20 eventos, média de 36 minutos) somam 63,5%. Os expositores têm muitos eventos curtos (115 a 129 por equipamento, média de 90 a 99 segundos) e ficam com cerca de 10% do custo cada no mercado e de 18% a 20% na padaria; de 59% a 70% dessas aberturas passam do limite de 60 segundos. A primeira ação é apagar a luz ao fechar a loja e ao sair do estoque; a segunda, reduzir o tempo de porta aberta dos expositores.</p>
 
 <h3>Consulta 3 · Em que horários o desperdício se concentra?</h3>
 <pre>SELECT f.hora, count(*) AS eventos,
@@ -228,7 +229,7 @@ FROM fato_desperdicio f
 GROUP BY f.hora
 ORDER BY f.hora;</pre>
 <figure><img src="prints/08-consulta3.png" alt="08-consulta3.png"><figcaption>Figura 21. Resultado da consulta 3.</figcaption></figure>
-<p><b>Interpretação:</b> <span class="preencher">escrever a partir do resultado: faixa de horas com mais portas abertas, e o peso das luzes acesas depois do fechamento (20h e 21h). Relacionar com a ação: reforçar a atenção no pico e desligar a iluminação ao fechar.</span></p>
+<p><b>Interpretação:</b> as portas abertas se concentram entre 12h e 16h (de 65 a 84 eventos por hora, com pico às 14h), mas essas cinco horas somam só 23,9% do custo. As horas 20h e 21h, logo depois do fechamento, somam 44,3% do custo com apenas 10 eventos de luz esquecida acesa. A atenção da equipe deve ser reforçada no meio da tarde para a refrigeração, e a rotina de fechamento precisa incluir a conferência da iluminação, que é onde está o maior valor.</p>
 
 <h3>Consulta 4 · Horas mais quentes têm mais desperdício na refrigeração?</h3>
 <pre>WITH horas AS (
@@ -253,7 +254,7 @@ LEFT JOIN fato_desperdicio f ON f.hora_referencia = h.data_hora AND f.tipo = 'po
 GROUP BY h.faixa_temperatura
 ORDER BY h.faixa_temperatura;</pre>
 <figure><img src="prints/08-consulta4.png" alt="08-consulta4.png"><figcaption>Figura 22. Resultado da consulta 4.</figcaption></figure>
-<p><b>Interpretação:</b> <span class="preencher">escrever a partir do resultado: como eventos_por_hora varia entre as faixas de temperatura.</span> A temperatura é real (Open-Meteo). Nos eventos simulados, as aberturas seguem um perfil horário com pico às 14h, que também é a hora mais quente; por isso a relação observada é a hipótese a validar com eventos reais, e não uma medição.</p>
+<p><b>Interpretação:</b> há tendência de mais aberturas e aberturas mais longas nas horas quentes, mas não é uma relação limpa: 5,50 eventos por hora abaixo de 18 °C, 4,28 entre 18 e 22 °C, 5,87 entre 22 e 26 °C, 5,57 entre 26 e 30 °C e 7,83 a partir de 30 °C, com a duração média subindo de 85 para 98 segundos. A faixa mais quente tem só 6 horas observadas, então o número é frágil. A temperatura é real (Open-Meteo). Nos eventos simulados, as aberturas seguem um perfil horário com pico às 14h, que também é a hora mais quente; por isso a relação observada é a hipótese a validar com eventos reais, e não uma medição.</p>
 
 <h3>Consulta 5 (impacto) · Quanto a loja deixou de desperdiçar depois dos alertas?</h3>
 <pre>WITH diario AS (
@@ -282,14 +283,14 @@ GROUP BY loja_id
 ORDER BY loja_id;</pre>
 <p>(Versão resumida; a consulta completa, com dias em cada fase e percentual de portas fechadas em até 2 minutos, está em <code>databricks/04_consultas.sql</code>.)</p>
 <figure><img src="prints/08-consulta5.png" alt="08-consulta5.png"><figcaption>Figura 23. Resultado da consulta 5, de impacto.</figcaption></figure>
-<p><b>Interpretação:</b> <span class="preencher">escrever a partir do resultado: redução percentual, R$ e kWh evitados em 30 dias por loja e queda no tempo médio de porta aberta.</span> Esta consulta calcula os indicadores de impacto da Ficha Técnica. Com dados simulados, a redução decorre da hipótese de que 70% dos alertas são atendidos em até 60 segundos; a mesma consulta mede o impacto real quando houver lojas piloto.</p>
+<p><b>Interpretação:</b> depois do início dos alertas, o desperdício diário caiu de R$ 0,4421 para R$ 0,1677 no mercado-01 (redução de 62,1%) e de R$ 0,2318 para R$ 0,1071 na padaria-01 (redução de 53,8%). Projetado para 30 dias, são R$ 8,23 e 9,14 kWh evitados no mercado e R$ 3,74 e 4,16 kWh na padaria. O tempo médio de porta aberta caiu de 90 para 85 segundos no mercado e de 90 para 76 na padaria. A comparação tem 9 dias antes e só 1 dia depois (10/11), então ainda é frágil; cada novo dia coletado entra na fase &quot;depois&quot;. Esta consulta calcula os indicadores de impacto da Ficha Técnica. Com dados simulados, a redução decorre da hipótese de que 70% dos alertas são atendidos em até 60 segundos; a mesma consulta mede o impacto real quando houver lojas piloto.</p>
 
 <!-- ============================ 09 ============================ -->
 <h2>09 · Conclusão técnica e link do repositório</h2>
 <p>O pipeline cobre o caminho completo: coleta diária orquestrada no Airflow 3, com quatro tarefas em paralelo e conferência dos arquivos; ingestão incremental e idempotente na Bronze por Auto Loader e COPY INTO; Prata com tipagem, regras de qualidade contabilizadas e MERGE pela chave; e Ouro dimensional, com dados pessoais protegidos, de onde sai o CSV que o painel exibe.</p>
 <p>Decisões que valem registro: (1) a coleta usa o dia anterior ao disparo, calculado no fuso de Brasília, porque no Airflow 3 a data lógica de um DAG com cron é o instante do disparo; (2) a Bronze fica em texto e a tipagem acontece na Prata, para que registro defeituoso seja barrado com motivo em vez de quebrar a carga; (3) o custo é guardado de duas formas, pela tarifa provisória do contrato do grupo e pela tarifa B3 homologada da ANEEL mais a bandeira do mês, sem tributos.</p>
-<p>Limitações: os eventos das lojas são simulados, e os parâmetros de potência e perda são estimativas do grupo. <span class="preencher">Acrescentar o que foi observado na execução: volumes, tempo de carga, dificuldades encontradas.</span> Próximo passo: substituir o simulador pelos eventos reais da detecção por câmera e do robô, que já usam o mesmo contrato de dados.</p>
-<p><b>Repositório:</b> <span class="preencher">https://github.com/usuario/repositorio</span></p>
+<p>Limitações: os eventos das lojas são simulados, e os parâmetros de potência e perda são estimativas do grupo. Na execução, 10 dias de coleta geraram 40 arquivos e 799 eventos brutos, dos quais 778 chegaram à Ouro; cada notebook roda em um a três minutos na computação serverless do Free Edition. A comparação de impacto ainda tem um único dia depois do início dos alertas. Próximo passo: substituir o simulador pelos eventos reais da detecção por câmera e do robô, que já usam o mesmo contrato de dados.</p>
+<p><b>Repositório:</b> <a href="https://github.com/Lucas-Umada/energia-que-da-lucro-dados">https://github.com/Lucas-Umada/energia-que-da-lucro-dados</a></p>
 
 <script>
   // Mostra um quadro "falta o print" quando a imagem ainda não foi salva na pasta prints/.

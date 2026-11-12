@@ -124,10 +124,10 @@ relatorio/                  relatório da disciplina (HTML para gerar o PDF)
 1. Importe os arquivos de `databricks/` como notebooks (Workspace > Import).
 2. Rode `00_setup`.
 3. Envie ao Volume `workspace.energia_lucro.chegada`, pela interface:
-   - `cadastro/lojas.csv` e `cadastro/equipamentos.csv` (de `amostras/cadastro/`);
-   - **1º lote**: os arquivos de alguns dias, mantendo as subpastas `clima/`, `bandeiras/`, `tarifas/` e `eventos/`.
+   - `lojas.csv` e `equipamentos.csv` (de `amostras/cadastro/`) na raiz do Volume;
+   - **1º lote**: os arquivos de alguns dias em `lote1/clima/`, `lote1/bandeiras/`, `lote1/tarifas/` e `lote1/eventos/`.
 4. Rode `01_bronze` e guarde as contagens.
-5. Envie o **2º lote** (dias diferentes) e rode `01_bronze` de novo: só as linhas novas entram. Rode uma terceira vez sem enviar nada: zero linhas novas.
+5. Envie o **2º lote** (dias diferentes) em `lote2/`, com as mesmas quatro subpastas, e rode `01_bronze` de novo: só as linhas novas entram. Rode uma terceira vez sem enviar nada: zero linhas novas.
 6. Rode `02_prata`, depois `03_ouro` (preencha o widget `sal_hash`), `04_consultas` e `05_exporta_csv_painel`.
 7. Baixe `chegada/_export/indicadores_ouro.csv` do Volume e entregue ao painel.
 
