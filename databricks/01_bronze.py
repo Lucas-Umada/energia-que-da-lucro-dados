@@ -52,6 +52,21 @@ def contar_arquivos(tabela: str) -> int:
 # COMMAND ----------
 
 # MAGIC %md
+# MAGIC ## Lotes presentes no Volume (requisito 04)
+# MAGIC Arquivos por lote e fonte, com o primeiro e o último dia de coleta de cada pasta.
+
+# COMMAND ----------
+
+linhas_lotes = []
+for lote in sorted(d.name.strip("/") for d in dbutils.fs.ls(BASE) if d.name.startswith("lote")):
+    for fonte in FONTES:
+        nomes = sorted(f.name for f in dbutils.fs.ls(f"{BASE}/{lote}/{fonte}"))
+        linhas_lotes.append((lote, fonte, len(nomes), nomes[0], nomes[-1]))
+display(spark.createDataFrame(linhas_lotes, "lote STRING, fonte STRING, arquivos INT, primeiro_arquivo STRING, ultimo_arquivo STRING"))
+
+# COMMAND ----------
+
+# MAGIC %md
 # MAGIC ## Carga com Auto Loader
 
 # COMMAND ----------

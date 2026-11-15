@@ -196,6 +196,24 @@ display(spark.table("dim_loja"))
 # COMMAND ----------
 
 # MAGIC %md
+# MAGIC ### Tabelas da Ouro no catálogo
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC SELECT 'fato_desperdicio' AS tabela, 'fato' AS papel, count(*) AS linhas FROM fato_desperdicio
+# MAGIC UNION ALL SELECT 'dim_loja', 'dimensão', count(*) FROM dim_loja
+# MAGIC UNION ALL SELECT 'dim_equipamento', 'dimensão', count(*) FROM dim_equipamento
+# MAGIC UNION ALL SELECT 'dim_tempo', 'dimensão', count(*) FROM dim_tempo;
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC SELECT * FROM fato_desperdicio ORDER BY hora_referencia DESC LIMIT 8;
+
+# COMMAND ----------
+
+# MAGIC %md
 # MAGIC ## vw_painel_indicadores — o contrato com o MVP
 # MAGIC Desperdício por loja, equipamento e dia. O notebook 05 exporta esta visão em CSV, e o painel carrega o arquivo
 # MAGIC na tela de indicadores. Não há dado pessoal nesta visão.
