@@ -8,11 +8,11 @@ Pipeline que coleta clima e tarifas reais e os eventos de desperdício das lojas
 
 | Nome completo | RM |
 |---|---|
-| _preencher_ | _preencher_ |
-| _preencher_ | _preencher_ |
-| _preencher_ | _preencher_ |
-| _preencher_ | _preencher_ |
-| _preencher_ | _preencher_ |
+| Gustavo Henrique Santos Bonfim | RM98864 |
+| João Pedro Marques | RM98307 |
+| Kayky Paschoal Ribeiro | RM99929 |
+| Lucas Yuji Farias Umada | RM99757 |
+| Natan Eguchi dos Santos | RM98720 |
 
 ## Ficha Técnica do MVP
 

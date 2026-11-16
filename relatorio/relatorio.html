@@ -53,11 +53,11 @@
 <h2>01 · Integrantes</h2>
 <table>
   <tr><th>Nome completo</th><th>RM</th></tr>
-  <tr><td><span class="preencher">Nome completo 1</span></td><td><span class="preencher">RM</span></td></tr>
-  <tr><td><span class="preencher">Nome completo 2</span></td><td><span class="preencher">RM</span></td></tr>
-  <tr><td><span class="preencher">Nome completo 3</span></td><td><span class="preencher">RM</span></td></tr>
-  <tr><td><span class="preencher">Nome completo 4</span></td><td><span class="preencher">RM</span></td></tr>
-  <tr><td><span class="preencher">Nome completo 5</span></td><td><span class="preencher">RM</span></td></tr>
+  <tr><td>Gustavo Henrique Santos Bonfim</td><td>RM98864</td></tr>
+  <tr><td>João Pedro Marques</td><td>RM98307</td></tr>
+  <tr><td>Kayky Paschoal Ribeiro</td><td>RM99929</td></tr>
+  <tr><td>Lucas Yuji Farias Umada</td><td>RM99757</td></tr>
+  <tr><td>Natan Eguchi dos Santos</td><td>RM98720</td></tr>
 </table>
 
 <!-- ============================ 02 ============================ -->
@@ -135,7 +135,7 @@
 
 <h3>Requisito 05 · Bronze incremental e sem duplicação</h3>
 <p>As quatro fontes entram por Auto Loader (<code>cloudFiles</code>, <code>trigger(availableNow=True)</code>), com checkpoint no Volume; o cadastro entra por <code>COPY INTO</code>. A Bronze guarda o dado bruto mais <code>arquivo_origem</code> e <code>carregado_em</code>. As contagens estão na seção 07.</p>
-<figure><img src="prints/05-bronze-codigo.png" alt="05-bronze-codigo.png"><figcaption>Figura 7. Célula do Auto Loader no notebook 01_bronze.</figcaption></figure>
+<figure><img src="prints/05-bronze-codigo.png" alt="05-bronze-codigo.png"><figcaption>Figura 6. Célula do Auto Loader no notebook 01_bronze.</figcaption></figure>
 
 <h3>Requisito 06 · Prata: tratamento, MERGE e regras de qualidade</h3>
 <p>Tipos convertidos com <code>try_cast</code> e <code>try_to_timestamp</code>; nulos e inválidos são barrados ou recalculados (custo nulo é refeito pela fórmula do contrato). O MERGE usa a chave de cada tabela (<code>id</code> nos eventos). Regras de qualidade dos eventos e total barrado na última execução:</p>
@@ -147,10 +147,10 @@
   <tr><td>R3</td><td>Início inválido ou no futuro</td><td>1.136</td><td>6</td></tr>
   <tr><td>R0, R4, D1</td><td>Id nulo · tipo ou origem fora do contrato · id repetido</td><td>1.136 · 1.136 · 1.111</td><td>0 · 0 · 6</td></tr>
 </table>
-<figure><img src="prints/06-prata-qualidade.png" alt="06-prata-qualidade.png"><figcaption>Figura 8. Total barrado por regra de qualidade (prata_qualidade_log), na execução com 14 dias. Os totais de todas as regras estão na tabela acima.</figcaption></figure>
-<figure><img src="prints/06-prata-merge.png" alt="06-prata-merge.png"><figcaption>Figura 9. Lote limpo e MERGE pelo id em prata_eventos.</figcaption></figure>
+<figure><img src="prints/06-prata-qualidade.png" alt="06-prata-qualidade.png"><figcaption>Figura 7. Total barrado por regra de qualidade (prata_qualidade_log), na execução com 14 dias. Os totais de todas as regras estão na tabela acima.</figcaption></figure>
+<figure><img src="prints/06-prata-merge.png" alt="06-prata-merge.png"><figcaption>Figura 8. Lote limpo e MERGE pelo id em prata_eventos.</figcaption></figure>
 
-<figure><img src="prints/06-prata-contagem.png" alt="06-prata-contagem.png"><figcaption>Figura 9b. Contagem das tabelas da Prata: linhas iguais ao número de chaves distintas, sem duplicatas.</figcaption></figure>
+<figure><img src="prints/06-prata-contagem.png" alt="06-prata-contagem.png"><figcaption>Figura 9. Contagem das tabelas da Prata: linhas iguais ao número de chaves distintas, sem duplicatas.</figcaption></figure>
 
 <h3>Requisito 07 · Ouro dimensional e 5 consultas</h3>
 <p>Uma fato e três dimensões: <code>fato_desperdicio</code> (um evento por linha), <code>dim_loja</code>, <code>dim_equipamento</code> e <code>dim_tempo</code> (com a bandeira e o clima do dia). As cinco consultas estão na seção 08.</p>
