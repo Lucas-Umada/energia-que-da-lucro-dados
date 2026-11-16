@@ -25,9 +25,9 @@ Pipeline que coleta clima e tarifas reais e os eventos de desperdício das lojas
 | Arquitetura: componentes | Detecção por câmera (Visão) · robô com sensores (Físico) · API e painel do comerciante (Produção) · **pipeline de dados (Dados, este repositório)** · consultor de eficiência com LLM local (Inteligência) · alertas e resumos automáticos (Automação) · modelo de negócio (Pitch). |
 | Fontes de dados | Clima (Open-Meteo) · bandeiras tarifárias e tarifas homologadas (dados abertos da ANEEL) · eventos das lojas (simulados, com geração documentada). |
 | Modelos de IA utilizados | YOLO treinado para portas de refrigeração abertas · LLM local com base de conhecimento (RAG) · IA embarcada no robô. |
-| URL do MVP e repositório | O MVP não foi publicado; a tela de indicadores roda localmente (`painel/indicadores.html`). Repositório: https://github.com/Lucas-Umada/energia-que-da-lucro-dados |
+| URL do MVP e repositório | MVP: http://100.60.176.115 (AWS Academy Learner Lab; só responde durante as sessões do laboratório) · código do MVP: https://github.com/Natan-TI/devops-energia · componente Dados: https://github.com/Lucas-Umada/energia-que-da-lucro-dados |
 | Indicadores de impacto | R$ e kWh de desperdício evitados por loja ao mês · tempo médio de porta aberta · percentual de alertas resolvidos em poucos minutos · número de lojas ativas. |
-| ODS conectados | ODS 9, 11 e 13. |
+| ODS conectados | ODS 7 (energia acessível e limpa), ODS 12 (consumo responsável), ODS 9, ODS 11 e ODS 13. |
 
 **Perguntas que o MVP responde ao comerciante, com estes dados**
 
@@ -133,7 +133,17 @@ relatorio/                  relatório da disciplina (HTML para gerar o PDF)
 6. Rode `02_prata`, depois `03_ouro` (preencha o widget `sal_hash`), `04_consultas` e `05_exporta_csv_painel`.
 7. Baixe `chegada/_export/indicadores_ouro.csv` do Volume e salve em `amostras/ouro/`.
 
-### 3. Tela de indicadores do MVP
+### 3. Ouro no MVP
+
+O MVP é o painel do comerciante (https://github.com/Natan-TI/devops-energia). Com ele no ar, envie a fato da Ouro pela API:
+
+```bash
+API_KEY=<chave do painel> python scripts/carrega_ouro_no_mvp.py http://localhost:8000
+```
+
+O script lê `amostras/ouro/fato_desperdicio_ouro.csv` (1.105 eventos exportados de `fato_desperdicio`) e chama `POST /events`. A chave vem da variável de ambiente.
+
+### 4. Tela complementar de indicadores
 
 A tela `painel/indicadores.html` lê `amostras/ouro/indicadores_ouro.csv` e mostra o desperdício do período, a redução depois dos alertas, a série diária por loja e o ranking de equipamentos. Na raiz do repositório, rode `python -m http.server 8000` e abra `http://localhost:8000/painel/indicadores.html`. Aberta direto do disco, a página pede que você selecione o CSV.
 

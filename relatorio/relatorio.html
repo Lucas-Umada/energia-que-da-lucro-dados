@@ -73,9 +73,9 @@
   <tr><td>Arquitetura: componentes</td><td>Detecção por câmera (Visão) · robô com sensores (Físico) · API e painel do comerciante (Produção) · pipeline de dados (Dados) · consultor de eficiência com LLM local (Inteligência) · alertas e resumos automáticos (Automação) · modelo de negócio (Pitch).</td></tr>
   <tr><td>Fontes de dados</td><td>Clima (Open-Meteo) · bandeiras tarifárias e tarifas homologadas (dados abertos da ANEEL) · eventos das lojas (simulados, com geração documentada).</td></tr>
   <tr><td>Modelos de IA utilizados</td><td>YOLO treinado para portas de refrigeração abertas · LLM local com base de conhecimento (RAG) · IA embarcada no robô.</td></tr>
-  <tr><td>URL do MVP e repositório</td><td>O MVP não foi publicado; a tela de indicadores roda localmente (<code>painel/indicadores.html</code>). Repositório do componente Dados: https://github.com/Lucas-Umada/energia-que-da-lucro-dados</td></tr>
+  <tr><td>URL do MVP e repositório</td><td>MVP: http://100.60.176.115 (AWS Academy Learner Lab; só responde durante as sessões do laboratório) · código do MVP: https://github.com/Natan-TI/devops-energia · componente Dados: https://github.com/Lucas-Umada/energia-que-da-lucro-dados</td></tr>
   <tr><td>Indicadores de impacto</td><td>R$ e kWh de desperdício evitados por loja ao mês · tempo médio de porta aberta · percentual de alertas resolvidos em poucos minutos · número de lojas ativas.</td></tr>
-  <tr><td>ODS conectados</td><td>ODS 9, 11 e 13. Menos energia desperdiçada no comércio de bairro reduz custos de quem sustenta a economia local (11), leva monitoramento inteligente a quem não tinha acesso (9) e diminui emissões associadas à geração (13).</td></tr>
+  <tr><td>ODS conectados</td><td>ODS 7, 12, 9, 11 e 13. Eficiência energética e consumo responsável no pequeno comércio (7 e 12). Menos energia desperdiçada no comércio de bairro reduz custos de quem sustenta a economia local (11), leva monitoramento inteligente a quem não tinha acesso (9) e diminui emissões associadas à geração (13).</td></tr>
 </table>
 
 <!-- ============================ 03 ============================ -->
@@ -88,9 +88,9 @@
   <div><b>Bronze</b>Auto Loader e COPY INTO</div><span>→</span>
   <div><b>Prata</b>tipos, regras, MERGE</div><span>→</span>
   <div><b>Ouro</b>fato + 3 dimensões</div><span>→</span>
-  <div><b>MVP</b>CSV na tela de indicadores</div>
+  <div><b>MVP</b>API e painel do comerciante</div>
 </div>
-<p>O Databricks Free Edition não se conecta ao Airflow nem ao painel. Os arquivos de <code>chegada/</code> sobem ao Volume pela interface, e a visão <code>vw_painel_indicadores</code> da Ouro é exportada em CSV, que a tela de indicadores do MVP carrega.</p>
+<p>O Databricks Free Edition não se conecta ao Airflow nem ao painel. Os arquivos de <code>chegada/</code> sobem ao Volume pela interface, e a visão <code>vw_painel_indicadores</code> da Ouro é exportada em CSV. A fato da Ouro também é exportada e enviada ao MVP pela API dele (<code>POST /events</code>).</p>
 
 <!-- ============================ 04 ============================ -->
 <h2>04 · Tabela de fontes</h2>
@@ -124,6 +124,7 @@
 <h3>Requisito 04 · Dois ou mais lotes no Volume</h3>
 <p>Os arquivos foram enviados ao Volume <code>workspace.energia_lucro.chegada</code> em 3 lotes, cada um em sua pasta: <code>lote1/</code> com os dias 01/11 a 05/11, <code>lote2/</code> com os dias 06/11 a 10/11 e <code>lote3/</code> com os dias 11/11 a 14/11 de 2026. Os dois primeiros foram enviados pela interface do Databricks; o terceiro, pela CLI oficial. O cadastro (<code>lojas.csv</code> e <code>equipamentos.csv</code>) fica na raiz do Volume.</p>
 <figure><img src="prints/04-volume-lotes.png" alt="04-volume-lotes.png"><figcaption>Figura 5. Lotes presentes no Volume, listados pelo notebook 01_bronze: arquivos por lote e fonte, com o primeiro e o último dia de cada pasta.</figcaption></figure>
+<figure><img src="prints/04-volume-cli.png" alt="04-volume-cli.png"><figcaption>Figura 5b. Conteúdo do Volume listado pela CLI oficial do Databricks: 56 arquivos em 3 lotes. A coluna de data e hora mostra três envios em momentos diferentes (11/11, 12/11 e 15/11/2026, UTC).</figcaption></figure>
 
 <h3>Requisito 05 · Bronze incremental e sem duplicação</h3>
 <p>As quatro fontes entram por Auto Loader (<code>cloudFiles</code>, <code>trigger(availableNow=True)</code>), com checkpoint no Volume; o cadastro entra por <code>COPY INTO</code>. A Bronze guarda o dado bruto mais <code>arquivo_origem</code> e <code>carregado_em</code>. As contagens estão na seção 07.</p>
@@ -152,8 +153,12 @@
 <h3>Requisito 08 · LGPD na Ouro e uso pelo MVP</h3>
 <p>O único dado pessoal do produto é o cadastro do responsável pela loja. Na <code>dim_loja</code>, nome, e-mail e telefone aparecem só mascarados, e o e-mail também como hash SHA-256 com sal (o sal não é versionado). Nenhuma imagem de câmera é armazenada. O cadastro usado é fictício.</p>
 <figure><img src="prints/08-lgpd-prata-x-ouro.png" alt="08-lgpd-prata-x-ouro.png"><figcaption>Figura 11. Comparação: dado em claro na Prata e protegido (máscara e hash) na Ouro.</figcaption></figure>
-<p>O MVP usa a visão <code>vw_painel_indicadores</code> (desperdício por loja, equipamento e dia), exportada em CSV pelo notebook 05. A tela de indicadores do MVP (<code>painel/indicadores.html</code>, no repositório) lê esse arquivo e calcula, a partir dele, o desperdício do período, a redução depois dos alertas, a série diária por loja e o ranking de equipamentos. Os números da tela conferem com as consultas 1, 2 e 5 da seção 08. A visão não tem dado pessoal. O MVP não foi publicado; a tela foi executada localmente.</p>
-<figure><img src="prints/08-painel-indicadores.png" alt="08-painel-indicadores.png"><figcaption>Figura 12. Tela de indicadores do MVP, executada localmente, exibindo os dados do CSV exportado da Ouro (139 linhas, 01/11 a 14/11/2026).</figcaption></figure>
+<p>O MVP é o painel do comerciante (API em FastAPI e telas web; código em <code>github.com/Natan-TI/devops-energia</code>, publicado na AWS pela entrega de DevOps). Ele recebe eventos por <code>POST /events</code>. Para mostrar o uso da Ouro, exportamos a <code>fato_desperdicio</code> com as dimensões de loja e equipamento (1.105 eventos, em <code>amostras/ouro/fato_desperdicio_ouro.csv</code>) e enviamos ao MVP com <code>scripts/carrega_ouro_no_mvp.py</code>. O MVP rodou localmente, com o mesmo código do repositório, banco SQLite e sem o simulador de eventos dele, para que as telas mostrassem só os dados da Ouro.</p>
+<p>Conferência: na tela Visão geral, o mercado-01 em novembro de 2026 aparece com 688 ocorrências, 5,5 kWh e R$ 4,36, os mesmos valores de <code>eventos</code>, <code>kwh_desperdicado</code> e <code>custo_aneel_rs</code> da consulta 1 (seção 08). O custo enviado é o da tarifa B3 da ANEEL, que é a tarifa usada pelo MVP. A fato guarda o evento por hora, então o horário exibido é a hora cheia. Nenhum dado pessoal é enviado ao MVP.</p>
+<figure><img src="prints/08-mvp-visao-geral.png" alt="08-mvp-visao-geral.png"><figcaption>Figura 12. MVP, tela Visão geral do mercado-01 em novembro de 2026, com os eventos da fato da Ouro: totais, causas, desperdício por dia e por equipamento.</figcaption></figure>
+<figure><img src="prints/08-mvp-eventos.png" alt="08-mvp-eventos.png"><figcaption>Figura 12b. MVP, tela Eventos do mercado-01 em 14/11/2026, último dia carregado da Ouro.</figcaption></figure>
+<p>A visão <code>vw_painel_indicadores</code> (desperdício por loja, equipamento e dia), exportada em CSV pelo notebook 05, alimenta uma tela complementar do componente Dados (<code>painel/indicadores.html</code>), que mostra o indicador de impacto antes e depois dos alertas.</p>
+<figure><img src="prints/08-painel-indicadores.png" alt="08-painel-indicadores.png"><figcaption>Figura 12c. Tela complementar de indicadores, lendo o CSV exportado da Ouro (139 linhas, 01/11 a 14/11/2026).</figcaption></figure>
 
 <h3>Requisito 09 · README e organização</h3>
 <p>Repositório com <code>dags/</code>, <code>databricks/</code>, <code>amostras/</code> e <code>README.md</code> (integrantes, Ficha Técnica, arquitetura e passo a passo). Sem chaves, senhas ou dados pessoais reais.</p>
@@ -287,7 +292,7 @@ ORDER BY loja_id;</pre>
 
 <!-- ============================ 09 ============================ -->
 <h2>09 · Conclusão técnica e link do repositório</h2>
-<p>O pipeline cobre o caminho completo: coleta diária orquestrada no Airflow 3, com quatro tarefas em paralelo e conferência dos arquivos; ingestão incremental e idempotente na Bronze por Auto Loader e COPY INTO; Prata com tipagem, regras de qualidade contabilizadas e MERGE pela chave; e Ouro dimensional, com dados pessoais protegidos, de onde sai o CSV que o painel exibe.</p>
+<p>O pipeline cobre o caminho completo: coleta diária orquestrada no Airflow 3, com quatro tarefas em paralelo e conferência dos arquivos; ingestão incremental e idempotente na Bronze por Auto Loader e COPY INTO; Prata com tipagem, regras de qualidade contabilizadas e MERGE pela chave; e Ouro dimensional, com dados pessoais protegidos, de onde saem os dados que o MVP exibe.</p>
 <p>Decisões que valem registro: (1) a coleta usa o dia anterior ao disparo, calculado no fuso de Brasília, porque no Airflow 3 a data lógica de um DAG com cron é o instante do disparo; (2) a Bronze fica em texto e a tipagem acontece na Prata, para que registro defeituoso seja barrado com motivo em vez de quebrar a carga; (3) o custo é guardado de duas formas, pela tarifa provisória do contrato do grupo e pela tarifa B3 homologada da ANEEL mais a bandeira do mês, sem tributos.</p>
 <p>Limitações: os eventos das lojas são simulados, e os parâmetros de potência e perda são estimativas do grupo. Na execução, 14 dias de coleta geraram 56 arquivos e 1.136 eventos brutos, dos quais 1.105 chegaram à Ouro; cada notebook roda em um a três minutos na computação serverless do Free Edition. Próximo passo: substituir o simulador pelos eventos reais da detecção por câmera e do robô, que já usam o mesmo contrato de dados.</p>
 <p><b>Repositório:</b> <a href="https://github.com/Lucas-Umada/energia-que-da-lucro-dados">https://github.com/Lucas-Umada/energia-que-da-lucro-dados</a></p>
