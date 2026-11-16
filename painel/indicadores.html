@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Energia que dá Lucro · Indicadores</title>
+<style>
+  :root {
+    --fundo: #f4f6f5; --superficie: #fcfcfb; --borda: #dfe3e1;
+    --texto: #0b0b0b; --texto-2: #52514e; --verde: #0b6b4f;
+    --serie-1: #2a78d6; --serie-2: #eb6834; --grade: #e6e9e7;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--fundo); color: var(--texto); font: 14px/1.45 "Segoe UI", system-ui, sans-serif; }
+  main { max-width: 1000px; margin: 0 auto; padding: 20px 16px 32px; }
+  header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 12px; margin-bottom: 14px; }
+  h1 { font-size: 22px; margin: 0; }
+  h1 span { color: var(--verde); }
+  h2 { font-size: 15px; margin: 0 0 2px; }
+  .sub { color: var(--texto-2); font-size: 12.5px; margin: 0; }
+  .fonte { background: #e7f3ee; border: 1px solid #b9dccd; border-radius: 6px; padding: 8px 12px; font-size: 12.5px; margin-bottom: 14px; }
+  .fonte code { font-family: Consolas, monospace; }
+  select, input[type=file] { font: inherit; padding: 5px 8px; border: 1px solid var(--borda); border-radius: 6px; background: var(--superficie); }
+  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; margin-bottom: 14px; }
+  .tile, .cartao { background: var(--superficie); border: 1px solid var(--borda); border-radius: 8px; padding: 12px 14px; }
+  .tile .rotulo { color: var(--texto-2); font-size: 12px; }
+  .tile .valor { font-size: 24px; font-weight: 650; margin-top: 2px; }
+  .tile .nota { color: var(--texto-2); font-size: 11.5px; }
+  .cartao { margin-bottom: 14px; }
+  .legenda { display: flex; gap: 16px; font-size: 12.5px; color: var(--texto-2); margin: 6px 0 2px; }
+  .legenda i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 5px; }
+  svg { width: 100%; height: auto; display: block; }
+  svg text { font: 11.5px "Segoe UI", system-ui, sans-serif; fill: var(--texto-2); }
+  .barras { display: grid; grid-template-columns: 190px 1fr 130px; gap: 5px 10px; align-items: center; font-size: 12.5px; margin-top: 8px; }
+  .barras .trilho { height: 14px; }
+  .barras .barra { height: 14px; border-radius: 0 4px 4px 0; }
+  .barras .num { text-align: right; font-variant-numeric: tabular-nums; }
+  table { border-collapse: collapse; width: 100%; font-size: 12.5px; margin-top: 8px; }
+  th, td { border-bottom: 1px solid var(--grade); padding: 4px 6px; text-align: left; white-space: nowrap; font-size: 12px; }
+  .rolagem { overflow-x: auto; }
+  td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; }
+  th { color: var(--texto-2); font-weight: 600; }
+  #dica { position: fixed; pointer-events: none; background: #0b0b0b; color: #fff; padding: 6px 9px; border-radius: 6px; font-size: 12px; display: none; white-space: pre; z-index: 5; }
+  #erro { display: none; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div>
+      <h1><span>Energia que dá Lucro</span> · Indicadores</h1>
+      <p class="sub">Quanto a loja desperdiça de energia, onde, e o que mudou depois dos alertas.</p>
+    </div>
+    <label>Loja <select id="loja"><option value="">Todas as lojas</option></select></label>
+  </header>
+
+  <div class="fonte" id="fonte">Carregando <code>indicadores_ouro.csv</code>…</div>
+  <div class="cartao" id="erro">
+    Não foi possível ler o CSV automaticamente (página aberta direto do disco). Selecione o arquivo
+    <code>amostras/ouro/indicadores_ouro.csv</code>: <input type="file" id="arquivo" accept=".csv">
+  </div>
+
+  <div id="conteudo" hidden>
+    <div class="tiles" id="tiles"></div>
+
+    <div class="cartao">
+      <h2>Desperdício por dia, em R$</h2>
+      <p class="sub">Custo estimado por loja. A linha vertical marca o início dos alertas (10/11/2026).</p>
+      <div class="legenda" id="legenda"></div>
+      <svg id="linha" viewBox="0 0 960 260" role="img" aria-label="Desperdício diário em reais por loja"></svg>
+    </div>
+
+    <div class="cartao">
+      <h2>Equipamentos que mais desperdiçam</h2>
+      <p class="sub">Custo estimado no período e parcela do custo da loja.</p>
+      <div class="barras" id="barras"></div>
+    </div>
+
+    <div class="cartao">
+      <h2>Dados recebidos da camada Ouro</h2>
+      <p class="sub" id="subtabela"></p>
+      <div class="rolagem"><table id="tabela"></table></div>
+    </div>
+  </div>
+</main>
+<div id="dica"></div>
+
+<script>
+// Tela de indicadores do MVP. Lê o CSV exportado da visão
+// workspace.energia_lucro.vw_painel_indicadores (notebook 05_exporta_csv_painel).
+const CAMINHO_CSV = "../amostras/ouro/indicadores_ouro.csv";
+const INICIO_ALERTAS = "2026-11-10";   // data_inicio_alertas do cadastro das lojas
+const CORES = ["var(--serie-1)", "var(--serie-2)"];   // cor fixa por loja, na ordem do cadastro
+const NUM = ["eventos", "eventos_acima_do_limite", "duracao_total_s", "duracao_media_s",
+             "kwh_desperdicado", "custo_estimado_rs", "custo_aneel_rs", "temp_max_c"];
+const rs = v => "R$ " + v.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const dec = (v, d = 2) => v.toLocaleString("pt-BR", { minimumFractionDigits: d, maximumFractionDigits: d });
+const dia = d => d.slice(8, 10) + "/" + d.slice(5, 7);
+const soma = (linhas, campo) => linhas.reduce((s, l) => s + l[campo], 0);
+const $ = id => document.getElementById(id);
+let dados = [], lojas = [];
+
+function lerCsv(texto) {
+  const [cab, ...linhas] = texto.replace(/^﻿/, "").trim().split(/\r?\n/);
+  const campos = cab.split(",");
+  return linhas.map(l => {
+    const v = l.split(","), o = {};
+    campos.forEach((c, i) => o[c] = NUM.includes(c) ? Number(v[i]) : v[i]);
+    return o;
+  });
+}
+
+function iniciar(texto, origem) {
+  dados = lerCsv(texto);
+  lojas = [...new Set(dados.map(l => l.loja_id))].sort();
+  const dias = [...new Set(dados.map(l => l.data))].sort();
+  $("fonte").innerHTML = `<b>Fonte:</b> <code>${origem}</code>, exportado da visão <code>vw_painel_indicadores</code> ` +
+    `(camada Ouro, Databricks) · ${dados.length} linhas · ${dia(dias[0])} a ${dia(dias.at(-1))}/2026 · sem dado pessoal`;
+  $("loja").innerHTML = '<option value="">Todas as lojas</option>' + lojas.map(l => `<option>${l}</option>`).join("");
+  $("erro").style.display = "none";
+  $("conteudo").hidden = false;
+  desenhar();
+}
+
+function mediaDiaria(linhas, campo, fase) {
+  const porDia = {};
+  linhas.filter(l => (l.data >= INICIO_ALERTAS) === (fase === "depois"))
+        .forEach(l => porDia[l.data] = (porDia[l.data] || 0) + l[campo]);
+  const v = Object.values(porDia);
+  return v.length ? v.reduce((a, b) => a + b, 0) / v.length : 0;
+}
+
+function desenhar() {
+  const filtro = $("loja").value;
+  const sel = dados.filter(l => !filtro || l.loja_id === filtro);
+  const dias = [...new Set(dados.map(l => l.data))].sort();
+
+  // Indicadores principais
+  const antes = mediaDiaria(sel, "custo_estimado_rs", "antes"), depois = mediaDiaria(sel, "custo_estimado_rs", "depois");
+  const kAntes = mediaDiaria(sel, "kwh_desperdicado", "antes"), kDepois = mediaDiaria(sel, "kwh_desperdicado", "depois");
+  const tiles = [
+    ["Desperdício no período", rs(soma(sel, "custo_estimado_rs")), `${dec(soma(sel, "kwh_desperdicado"))} kWh em ${dias.length} dias`],
+    ["Eventos de desperdício", soma(sel, "eventos").toLocaleString("pt-BR"), `${soma(sel, "eventos_acima_do_limite")} acima do limite de alerta`],
+    ["Redução depois dos alertas", dec(100 * (1 - depois / antes), 1) + "%", `de ${rs(antes)} para ${rs(depois)} por dia`],
+    ["Evitado em 30 dias", rs(30 * (antes - depois)), `${dec(30 * (kAntes - kDepois))} kWh a menos`],
+  ];
+  $("tiles").innerHTML = tiles.map(t =>
+    `<div class="tile"><div class="rotulo">${t[0]}</div><div class="valor">${t[1]}</div><div class="nota">${t[2]}</div></div>`).join("");
+
+  // Linha: custo por dia e por loja
+  const series = lojas.filter(l => !filtro || l === filtro).map(l => ({
+    loja: l, cor: CORES[lojas.indexOf(l)],
+    pontos: dias.map(d => soma(dados.filter(x => x.loja_id === l && x.data === d), "custo_estimado_rs")),
+  }));
+  $("legenda").innerHTML = series.map(s => `<span><i style="background:${s.cor}"></i>${s.loja}</span>`).join("");
+  const W = 960, H = 260, m = { e: 48, d: 90, t: 14, b: 28 };
+  const max = Math.max(...series.flatMap(s => s.pontos)) * 1.1;
+  const x = i => m.e + i * (W - m.e - m.d) / (dias.length - 1), y = v => H - m.b - v * (H - m.t - m.b) / max;
+  let svg = "";
+  for (let g = 0; g <= 4; g++) {
+    const v = max * g / 4;
+    svg += `<line x1="${m.e}" x2="${W - m.d}" y1="${y(v)}" y2="${y(v)}" stroke="var(--grade)"/>` +
+           `<text x="${m.e - 6}" y="${y(v) + 4}" text-anchor="end">${dec(v)}</text>`;
+  }
+  dias.forEach((d, i) => svg += `<text x="${x(i)}" y="${H - 8}" text-anchor="middle">${dia(d)}</text>`);
+  const iAlerta = dias.indexOf(INICIO_ALERTAS);
+  if (iAlerta >= 0) svg += `<line x1="${x(iAlerta)}" x2="${x(iAlerta)}" y1="${m.t}" y2="${H - m.b}" stroke="var(--texto-2)" stroke-dasharray="4 3"/>` +
+    `<text x="${x(iAlerta) + 6}" y="${m.t + 10}">início dos alertas</text>`;
+  series.forEach(s => {
+    svg += `<polyline fill="none" stroke="${s.cor}" stroke-width="2" stroke-linejoin="round" points="${s.pontos.map((v, i) => x(i) + "," + y(v)).join(" ")}"/>`;
+    s.pontos.forEach((v, i) => svg += `<circle cx="${x(i)}" cy="${y(v)}" r="4" fill="${s.cor}" stroke="var(--superficie)" stroke-width="2"/>`);
+    svg += `<text x="${x(dias.length - 1) + 10}" y="${y(s.pontos.at(-1)) + 4}" style="fill:var(--texto)">${s.loja}</text>`;
+  });
+  dias.forEach((d, i) => svg += `<rect x="${x(i) - 30}" y="0" width="60" height="${H}" fill="transparent" data-dica="${dia(d)}/2026\n${series.map(s => s.loja + ": " + rs(s.pontos[i])).join("\n")}"/>`);
+  $("linha").innerHTML = svg;
+
+  // Barras: custo por equipamento
+  const equip = {};
+  sel.forEach(l => {
+    const k = l.loja_id + " · " + l.equipamento_id;
+    equip[k] = equip[k] || { nome: k, loja: l.loja_id, rs: 0, kwh: 0, eventos: 0 };
+    equip[k].rs += l.custo_estimado_rs; equip[k].kwh += l.kwh_desperdicado; equip[k].eventos += l.eventos;
+  });
+  const lista = Object.values(equip).sort((a, b) => b.rs - a.rs);
+  const maior = lista[0].rs, totalLoja = {};
+  lista.forEach(e => totalLoja[e.loja] = (totalLoja[e.loja] || 0) + e.rs);
+  $("barras").innerHTML = lista.map(e =>
+    `<div>${e.nome}</div><div class="trilho" data-dica="${e.nome}\n${rs(e.rs)} · ${dec(e.kwh)} kWh · ${e.eventos} eventos">` +
+    `<div class="barra" style="width:${100 * e.rs / maior}%;background:${CORES[lojas.indexOf(e.loja)]}"></div></div>` +
+    `<div class="num">${rs(e.rs)} · ${dec(100 * e.rs / totalLoja[e.loja], 1)}%</div>`).join("");
+
+  // Tabela: últimas linhas recebidas
+  const cols = ["loja_id", "equipamento_id", "data", "eventos", "duracao_media_s", "kwh_desperdicado", "custo_estimado_rs", "custo_aneel_rs", "bandeira", "temp_max_c"];
+  const ultimas = [...sel].sort((a, b) => b.data.localeCompare(a.data)).slice(0, 8);
+  $("subtabela").textContent = `8 linhas mais recentes de ${sel.length}, como vieram do CSV.`;
+  $("tabela").innerHTML = "<tr>" + cols.map(c => `<th class="${NUM.includes(c) ? "n" : ""}">${c}</th>`).join("") + "</tr>" +
+    ultimas.map(l => "<tr>" + cols.map(c => `<td class="${NUM.includes(c) ? "n" : ""}">${l[c]}</td>`).join("") + "</tr>").join("");
+}
+
+// Dica ao passar o mouse
+document.addEventListener("mousemove", e => {
+  const alvo = e.target.closest("[data-dica]"), dica = $("dica");
+  if (!alvo) { dica.style.display = "none"; return; }
+  dica.textContent = alvo.dataset.dica;
+  dica.style.display = "block";
+  dica.style.left = Math.min(e.clientX + 14, innerWidth - dica.offsetWidth - 8) + "px";
+  dica.style.top = (e.clientY + 14) + "px";
+});
+$("loja").addEventListener("change", desenhar);
+$("arquivo").addEventListener("change", e => e.target.files[0].text().then(t => iniciar(t, e.target.files[0].name)));
+
+fetch(CAMINHO_CSV).then(r => { if (!r.ok) throw 0; return r.text(); })
+  .then(t => iniciar(t, "amostras/ouro/indicadores_ouro.csv"))
+  .catch(() => { $("fonte").style.display = "none"; $("erro").style.display = "block"; });
+</script>
+</body>
+</html>

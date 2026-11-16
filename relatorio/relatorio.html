@@ -35,15 +35,7 @@
 </head>
 <body>
 
-<div class="instrucoes">
-  <b>Como transformar este arquivo no PDF da entrega</b> (este quadro não sai na impressão)
-  <ol>
-    <li>Salve cada print em <code>relatorio/prints/</code> com o nome indicado no quadro tracejado. Ele aparece no lugar ao recarregar a página.</li>
-    <li>Troque todos os trechos <span class="preencher">em amarelo</span> pelos valores reais (edite o HTML em qualquer editor de texto).</li>
-    <li>Abra no navegador, Ctrl+P, destino "Salvar como PDF", com "Gráficos de plano de fundo" ligado.</li>
-    <li>Confira no PDF se todo print está legível e com legenda, e se a ordem das seções 01 a 09 foi mantida.</li>
-  </ol>
-</div>
+
 
 <div class="sobre">FIAP · Global Solution 2026.2 · CitizenTech · 4ES</div>
 <h1>Energia que dá Lucro · componente Dados</h1>
@@ -74,16 +66,16 @@
 <h3>Ficha Técnica do MVP</h3>
 <table>
   <tr><th>Campo</th><th>Conteúdo</th></tr>
-  <tr><td>Nome do produto</td><td>Energia que dá Lucro <span class="preencher">(confirmar nome definitivo)</span></td></tr>
+  <tr><td>Nome do produto</td><td>Energia que dá Lucro</td></tr>
   <tr><td>Cidadão e território</td><td>Donos e funcionários de pequenos comércios de bairro (mercadinhos, padarias, açougues, lojas) em cidades brasileiras.</td></tr>
   <tr><td>Problema, em uma frase</td><td>O pequeno comerciante paga caro de energia sem saber quais hábitos e equipamentos causam o desperdício.</td></tr>
   <tr><td>Proposta de valor</td><td>Mostrar o desperdício em reais, avisar na hora em que ele acontece e sugerir ações simples, usando as câmeras que a loja já tem.</td></tr>
   <tr><td>Arquitetura: componentes</td><td>Detecção por câmera (Visão) · robô com sensores (Físico) · API e painel do comerciante (Produção) · pipeline de dados (Dados) · consultor de eficiência com LLM local (Inteligência) · alertas e resumos automáticos (Automação) · modelo de negócio (Pitch).</td></tr>
   <tr><td>Fontes de dados</td><td>Clima (Open-Meteo) · bandeiras tarifárias e tarifas homologadas (dados abertos da ANEEL) · eventos das lojas (simulados, com geração documentada).</td></tr>
   <tr><td>Modelos de IA utilizados</td><td>YOLO treinado para portas de refrigeração abertas · LLM local com base de conhecimento (RAG) · IA embarcada no robô.</td></tr>
-  <tr><td>URL do MVP e repositório</td><td><span class="preencher">URL pública do painel</span> · repositório do componente Dados: https://github.com/Lucas-Umada/energia-que-da-lucro-dados</td></tr>
+  <tr><td>URL do MVP e repositório</td><td>O MVP não foi publicado; a tela de indicadores roda localmente (<code>painel/indicadores.html</code>). Repositório do componente Dados: https://github.com/Lucas-Umada/energia-que-da-lucro-dados</td></tr>
   <tr><td>Indicadores de impacto</td><td>R$ e kWh de desperdício evitados por loja ao mês · tempo médio de porta aberta · percentual de alertas resolvidos em poucos minutos · número de lojas ativas.</td></tr>
-  <tr><td>ODS conectados</td><td>ODS 9, 11 e 13 <span class="preencher">(incluir 7 e 12 se o professor confirmar)</span>. Menos energia desperdiçada no comércio de bairro reduz custos de quem sustenta a economia local (11), leva monitoramento inteligente a quem não tinha acesso (9) e diminui emissões associadas à geração (13).</td></tr>
+  <tr><td>ODS conectados</td><td>ODS 9, 11 e 13. Menos energia desperdiçada no comércio de bairro reduz custos de quem sustenta a economia local (11), leva monitoramento inteligente a quem não tinha acesso (9) e diminui emissões associadas à geração (13).</td></tr>
 </table>
 
 <!-- ============================ 03 ============================ -->
@@ -98,7 +90,7 @@
   <div><b>Ouro</b>fato + 3 dimensões</div><span>→</span>
   <div><b>MVP</b>CSV na tela de indicadores</div>
 </div>
-<p>O Databricks Free Edition não se conecta ao Airflow nem ao painel. Os arquivos de <code>chegada/</code> sobem ao Volume pela interface, e a visão <code>vw_painel_indicadores</code> da Ouro é exportada em CSV, que o painel carrega.</p>
+<p>O Databricks Free Edition não se conecta ao Airflow nem ao painel. Os arquivos de <code>chegada/</code> sobem ao Volume pela interface, e a visão <code>vw_painel_indicadores</code> da Ouro é exportada em CSV, que a tela de indicadores do MVP carrega.</p>
 
 <!-- ============================ 04 ============================ -->
 <h2>04 · Tabela de fontes</h2>
@@ -148,6 +140,7 @@
   <tr><td>R0, R4, D1</td><td>Id nulo · tipo ou origem fora do contrato · id repetido</td><td>1.136 · 1.136 · 1.111</td><td>0 · 0 · 6</td></tr>
 </table>
 <figure><img src="prints/06-prata-qualidade.png" alt="06-prata-qualidade.png"><figcaption>Figura 7. Total barrado por regra de qualidade (prata_qualidade_log), na execução com 14 dias. Os totais de todas as regras estão na tabela acima.</figcaption></figure>
+<figure><img src="prints/06-prata-qualidade-resultado.png" alt="06-prata-qualidade-resultado.png"><figcaption>Figura 7b. Mesmo resultado com todas as colunas visíveis, incluindo total_barrado.</figcaption></figure>
 <figure><img src="prints/06-prata-merge.png" alt="06-prata-merge.png"><figcaption>Figura 8. Lote limpo e MERGE pelo id em prata_eventos.</figcaption></figure>
 
 <figure><img src="prints/06-prata-contagem.png" alt="06-prata-contagem.png"><figcaption>Figura 9. Contagem das tabelas da Prata: linhas iguais ao número de chaves distintas, sem duplicatas.</figcaption></figure>
@@ -159,8 +152,8 @@
 <h3>Requisito 08 · LGPD na Ouro e uso pelo MVP</h3>
 <p>O único dado pessoal do produto é o cadastro do responsável pela loja. Na <code>dim_loja</code>, nome, e-mail e telefone aparecem só mascarados, e o e-mail também como hash SHA-256 com sal (o sal não é versionado). Nenhuma imagem de câmera é armazenada. O cadastro usado é fictício.</p>
 <figure><img src="prints/08-lgpd-prata-x-ouro.png" alt="08-lgpd-prata-x-ouro.png"><figcaption>Figura 11. Comparação: dado em claro na Prata e protegido (máscara e hash) na Ouro.</figcaption></figure>
-<p>O MVP usa a visão <code>vw_painel_indicadores</code> (desperdício por loja, equipamento e dia), exportada em CSV pelo notebook 05. O painel carrega o arquivo na tela de indicadores. A visão não tem dado pessoal.</p>
-<figure><img src="prints/08-painel-indicadores.png" alt="08-painel-indicadores.png"><figcaption>Figura 12. Tela de indicadores do painel exibindo os dados da Ouro.</figcaption></figure>
+<p>O MVP usa a visão <code>vw_painel_indicadores</code> (desperdício por loja, equipamento e dia), exportada em CSV pelo notebook 05. A tela de indicadores do MVP (<code>painel/indicadores.html</code>, no repositório) lê esse arquivo e calcula, a partir dele, o desperdício do período, a redução depois dos alertas, a série diária por loja e o ranking de equipamentos. Os números da tela conferem com as consultas 1, 2 e 5 da seção 08. A visão não tem dado pessoal. O MVP não foi publicado; a tela foi executada localmente.</p>
+<figure><img src="prints/08-painel-indicadores.png" alt="08-painel-indicadores.png"><figcaption>Figura 12. Tela de indicadores do MVP, executada localmente, exibindo os dados do CSV exportado da Ouro (139 linhas, 01/11 a 14/11/2026).</figcaption></figure>
 
 <h3>Requisito 09 · README e organização</h3>
 <p>Repositório com <code>dags/</code>, <code>databricks/</code>, <code>amostras/</code> e <code>README.md</code> (integrantes, Ficha Técnica, arquitetura e passo a passo). Sem chaves, senhas ou dados pessoais reais.</p>
@@ -201,7 +194,8 @@ JOIN dim_loja l  ON l.loja_sk = f.loja_sk
 JOIN dim_tempo t ON t.data_id = f.data_id
 GROUP BY l.loja_id, t.periodo
 ORDER BY t.periodo, custo_estimado_rs DESC;</pre>
-<figure><img src="prints/08-consulta1.png" alt="08-consulta1.png"><figcaption>Figura 19. Resultado da consulta 1.</figcaption></figure>
+<figure><img src="prints/08-consulta1.png" alt="08-consulta1.png"><figcaption>Figura 19. Consulta 1 executada no notebook 04_consultas.</figcaption></figure>
+<figure><img src="prints/08-consulta1-resultado.png" alt="08-consulta1-resultado.png"><figcaption>Figura 19b. Resultado da consulta 1 com todas as colunas visíveis.</figcaption></figure>
 <p><b>Interpretação:</b> em 14 dias de novembro, o mercado-01 teve 688 eventos, 5,53 kWh e R$ 4,98 de desperdício; a padaria-01, 417 eventos, 2,82 kWh e R$ 2,54. Projetado para 30 dias, isso dá R$ 10,66 e R$ 5,45 por loja. O mercado desperdiça quase o dobro porque tem mais equipamentos (7 contra 4). Pela tarifa B3 homologada da ANEEL, sem tributos, os mesmos kWh valem R$ 4,36 e R$ 2,23, cerca de 12% menos que pela tarifa provisória de R$ 0,90/kWh do grupo. Os valores são pequenos porque a potência e o fator de perda dos equipamentos são estimativas conservadoras do grupo; o que o painel mostra ao comerciante é a proporção entre lojas e a evolução no tempo.</p>
 
 <h3>Consulta 2 · Quais equipamentos mais desperdiçam?</h3>
@@ -217,7 +211,8 @@ JOIN dim_loja l        ON l.loja_sk = f.loja_sk
 JOIN dim_equipamento q ON q.equipamento_sk = f.equipamento_sk
 GROUP BY l.loja_id, q.equipamento_id, q.categoria
 ORDER BY l.loja_id, custo_estimado_rs DESC;</pre>
-<figure><img src="prints/08-consulta2.png" alt="08-consulta2.png"><figcaption>Figura 20. Resultado da consulta 2.</figcaption></figure>
+<figure><img src="prints/08-consulta2.png" alt="08-consulta2.png"><figcaption>Figura 20. Consulta 2 executada no notebook 04_consultas.</figcaption></figure>
+<figure><img src="prints/08-consulta2-resultado.png" alt="08-consulta2-resultado.png"><figcaption>Figura 20b. Resultado da consulta 2 com todas as colunas visíveis.</figcaption></figure>
 <p><b>Interpretação:</b> a iluminação concentra o custo com poucos eventos longos. Na padaria-01, a luz do salão teve só 7 eventos (média de 39 minutos cada) e responde por 48,9% do custo. No mercado-01, o salão (6 eventos, média de 60 minutos) e o estoque (28 eventos, média de 30 minutos) somam 57,9%. Os expositores têm muitos eventos curtos (164 a 181 por equipamento, média de 87 a 92 segundos) e ficam com cerca de 12% do custo cada no mercado e de 21% a 22% na padaria; de 61% a 68% dessas aberturas passam do limite de 60 segundos. A primeira ação é apagar a luz ao fechar a loja e ao sair do estoque; a segunda, reduzir o tempo de porta aberta dos expositores.</p>
 
 <h3>Consulta 3 · Em que horários o desperdício se concentra?</h3>
@@ -230,7 +225,8 @@ ORDER BY l.loja_id, custo_estimado_rs DESC;</pre>
 FROM fato_desperdicio f
 GROUP BY f.hora
 ORDER BY f.hora;</pre>
-<figure><img src="prints/08-consulta3.png" alt="08-consulta3.png"><figcaption>Figura 21. Resultado da consulta 3.</figcaption></figure>
+<figure><img src="prints/08-consulta3.png" alt="08-consulta3.png"><figcaption>Figura 21. Consulta 3 executada no notebook 04_consultas.</figcaption></figure>
+<figure><img src="prints/08-consulta3-resultado.png" alt="08-consulta3-resultado.png"><figcaption>Figura 21b. Resultado da consulta 3 com todas as colunas visíveis.</figcaption></figure>
 <p><b>Interpretação:</b> as portas abertas se concentram entre 12h e 16h (de 86 a 119 eventos por hora, com pico às 14h e 15h), e essas cinco horas somam 27,6% do custo. As horas 20h e 21h, logo depois do fechamento, somam 39,4% do custo com apenas 14 eventos de luz esquecida acesa. A atenção da equipe deve ser reforçada no meio da tarde para a refrigeração, e a rotina de fechamento precisa incluir a conferência da iluminação, que é onde está o maior valor.</p>
 
 <h3>Consulta 4 · Horas mais quentes têm mais desperdício na refrigeração?</h3>
@@ -255,7 +251,8 @@ FROM horas h
 LEFT JOIN fato_desperdicio f ON f.hora_referencia = h.data_hora AND f.tipo = 'porta_aberta'
 GROUP BY h.faixa_temperatura
 ORDER BY h.faixa_temperatura;</pre>
-<figure><img src="prints/08-consulta4.png" alt="08-consulta4.png"><figcaption>Figura 22. Resultado da consulta 4.</figcaption></figure>
+<figure><img src="prints/08-consulta4.png" alt="08-consulta4.png"><figcaption>Figura 22. Consulta 4 executada no notebook 04_consultas.</figcaption></figure>
+<figure><img src="prints/08-consulta4-resultado.png" alt="08-consulta4-resultado.png"><figcaption>Figura 22b. Resultado da consulta 4 com todas as colunas visíveis.</figcaption></figure>
 <p><b>Interpretação:</b> há tendência de mais aberturas nas horas quentes, mas não é uma relação limpa: 5,48 eventos por hora abaixo de 18 °C, 4,50 entre 18 e 22 °C, 5,76 entre 22 e 26 °C, 6,55 entre 26 e 30 °C e 7,83 a partir de 30 °C, com a duração média entre 80 e 98 segundos. A faixa mais quente tem só 6 horas observadas, então o número é frágil. A temperatura é real (Open-Meteo). Nos eventos simulados, as aberturas seguem um perfil horário com pico às 14h, que também é a hora mais quente; por isso a relação observada é a hipótese a validar com eventos reais, e não uma medição.</p>
 
 <h3>Consulta 5 (impacto) · Quanto a loja deixou de desperdiçar depois dos alertas?</h3>
@@ -284,7 +281,8 @@ FROM diario
 GROUP BY loja_id
 ORDER BY loja_id;</pre>
 <p>(Versão resumida; a consulta completa, com dias em cada fase e percentual de portas fechadas em até 2 minutos, está em <code>databricks/04_consultas.sql</code>.)</p>
-<figure><img src="prints/08-consulta5.png" alt="08-consulta5.png"><figcaption>Figura 23. Resultado da consulta 5, de impacto.</figcaption></figure>
+<figure><img src="prints/08-consulta5.png" alt="08-consulta5.png"><figcaption>Figura 23. Consulta 5 executada no notebook 04_consultas, de impacto.</figcaption></figure>
+<figure><img src="prints/08-consulta5-resultado.png" alt="08-consulta5-resultado.png"><figcaption>Figura 23b. Resultado da consulta 5 em captura mais larga, com as colunas de redução percentual e de R$ e kWh evitados em 30 dias.</figcaption></figure>
 <p><b>Interpretação:</b> depois do início dos alertas, o desperdício diário caiu de R$ 0,4421 para R$ 0,1994 no mercado-01 (redução de 54,9%) e de R$ 0,2318 para R$ 0,0910 na padaria-01 (redução de 60,8%). Projetado para 30 dias, são R$ 7,28 e 8,09 kWh evitados no mercado e R$ 4,23 e 4,70 kWh na padaria. O tempo médio de porta aberta caiu de 90 para 79 segundos no mercado e de 90 para 73 na padaria. A comparação tem 9 dias antes e 5 dias depois do início dos alertas. Esta consulta calcula os indicadores de impacto da Ficha Técnica. Com dados simulados, a redução decorre da hipótese de que 70% dos alertas são atendidos em até 60 segundos; a mesma consulta mede o impacto real quando houver lojas piloto.</p>
 
 <!-- ============================ 09 ============================ -->

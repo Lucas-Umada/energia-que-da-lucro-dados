@@ -18,16 +18,16 @@ Pipeline que coleta clima e tarifas reais e os eventos de desperdício das lojas
 
 | Campo | Conteúdo |
 |---|---|
-| Nome do produto | Energia que dá Lucro _(nome provisório, a confirmar)_ |
+| Nome do produto | Energia que dá Lucro |
 | Cidadão e território | Donos e funcionários de pequenos comércios de bairro (mercadinhos, padarias, açougues, lojas) em cidades brasileiras. |
 | Problema, em uma frase | O pequeno comerciante paga caro de energia sem saber quais hábitos e equipamentos causam o desperdício. |
 | Proposta de valor | Mostrar o desperdício em reais, avisar na hora em que ele acontece e sugerir ações simples, usando as câmeras que a loja já tem. |
 | Arquitetura: componentes | Detecção por câmera (Visão) · robô com sensores (Físico) · API e painel do comerciante (Produção) · **pipeline de dados (Dados, este repositório)** · consultor de eficiência com LLM local (Inteligência) · alertas e resumos automáticos (Automação) · modelo de negócio (Pitch). |
 | Fontes de dados | Clima (Open-Meteo) · bandeiras tarifárias e tarifas homologadas (dados abertos da ANEEL) · eventos das lojas (simulados, com geração documentada). |
 | Modelos de IA utilizados | YOLO treinado para portas de refrigeração abertas · LLM local com base de conhecimento (RAG) · IA embarcada no robô. |
-| URL do MVP e repositório | _a definir (entrega de DevOps)_ |
+| URL do MVP e repositório | O MVP não foi publicado; a tela de indicadores roda localmente (`painel/indicadores.html`). Repositório: https://github.com/Lucas-Umada/energia-que-da-lucro-dados |
 | Indicadores de impacto | R$ e kWh de desperdício evitados por loja ao mês · tempo médio de porta aberta · percentual de alertas resolvidos em poucos minutos · número de lojas ativas. |
-| ODS conectados | ODS 9, 11 e 13 (lista do desafio); ODS 7 e 12 são os mais diretos, a confirmar com o professor. |
+| ODS conectados | ODS 9, 11 e 13. |
 
 **Perguntas que o MVP responde ao comerciante, com estes dados**
 
@@ -95,7 +95,9 @@ databricks/
   03_ouro.py                fato, dimensões, LGPD e visão do painel
   04_consultas.sql          as 5 consultas do MVP
   05_exporta_csv_painel.py  CSV da Ouro para o painel
-amostras/                   um pouco de cada fonte
+painel/
+  indicadores.html          tela de indicadores do MVP, lê o CSV da Ouro
+amostras/                   um pouco de cada fonte e o CSV da Ouro
 relatorio/                  relatório da disciplina (HTML para gerar o PDF)
 ```
 
@@ -129,7 +131,11 @@ relatorio/                  relatório da disciplina (HTML para gerar o PDF)
 4. Rode `01_bronze` e guarde as contagens.
 5. Envie o **2º lote** (dias diferentes) em `lote2/`, com as mesmas quatro subpastas, e rode `01_bronze` de novo: só as linhas novas entram. Rode uma terceira vez sem enviar nada: zero linhas novas.
 6. Rode `02_prata`, depois `03_ouro` (preencha o widget `sal_hash`), `04_consultas` e `05_exporta_csv_painel`.
-7. Baixe `chegada/_export/indicadores_ouro.csv` do Volume e entregue ao painel.
+7. Baixe `chegada/_export/indicadores_ouro.csv` do Volume e salve em `amostras/ouro/`.
+
+### 3. Tela de indicadores do MVP
+
+A tela `painel/indicadores.html` lê `amostras/ouro/indicadores_ouro.csv` e mostra o desperdício do período, a redução depois dos alertas, a série diária por loja e o ranking de equipamentos. Na raiz do repositório, rode `python -m http.server 8000` e abra `http://localhost:8000/painel/indicadores.html`. Aberta direto do disco, a página pede que você selecione o CSV.
 
 ## Qualidade e idempotência
 
@@ -154,10 +160,3 @@ Regras dos eventos: **R1** duração entre 1 s e 4 h · **R2** loja e equipament
 - **ODS 9** (indústria, inovação e infraestrutura): leva tecnologia de monitoramento, antes restrita a grandes redes, ao pequeno comércio.
 - **ODS 11** (cidades e comunidades sustentáveis): reduz o consumo de energia do comércio de bairro, que sustenta a vida local.
 - **ODS 13** (ação contra a mudança do clima): menos energia desperdiçada significa menos emissões associadas à geração.
-- ODS 7 (energia acessível e limpa, meta 7.3 de eficiência) e ODS 12 (consumo responsável) são os mais diretos; a citação depende de confirmação com o professor, por não estarem na lista do desafio.
-
-## Limitações conhecidas
-
-- Os eventos das lojas são simulados. As consultas mostram como cada pergunta é respondida; os valores refletem as hipóteses do simulador.
-- Os parâmetros de potência e perda são provisórios (contrato do grupo) e os de iluminação são suposição desta entrega.
-- `custo_aneel_rs` usa a tarifa homologada, sem tributos.
